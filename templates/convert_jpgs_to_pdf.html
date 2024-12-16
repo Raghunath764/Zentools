@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block title %}JPG to PDF{% endblock %}
+
+{% block styles %}
+	<style>
+		.converted_Image{
+            width: 400px;
+            height: 225px;
+            margin-top: 10px;
+        }
+
+		button, .btn {
+        background-color: #4CAF50; /* Green */
+        color: white;
+        padding: 10px 15px;
+        margin: 10px 5px;
+        border: none;
+        cursor: pointer;
+        text-decoration: none;
+		}	
+
+		button:hover, .btn:hover {
+        background-color: #45a049;
+		}
+		h1 {
+			text-align: center;
+			color: #2c3e50;
+			margin-bottom: 30px;
+			font-size: 2.5em;
+			margin-top: 100px; /* Add margin to offset the fixed header */
+		}
+	</style>
+{% endblock %}
+
+{% block content %}
+	<h1>JPG to PDF</h1>
+	<p>Convert JPG to PDF for free online. Our JPG to PDF Converter transforms JPG image file into a custom PDF file in seconds—no file size limits, no watermarks.</p>
+    <form method="POST" enctype="multipart/form-data">
+		<label for="image_files">Select JPG images:</label>
+        <input type="file" name="image_files" accept=".jpg, .jpeg" multiple required>
+		<br>
+		<br>
+        <button type="submit">Upload and Convert</button>
+    </form>
+    
+    {% if error_message %}
+        <p style="color:red;">{{ error_message }}</p>
+	{% else %}
+		{% if pdf_file_path %}
+			<h2>The images have been converted to PDF</h2>
+			<a href="{{ url_for('download_file', filename=pdf_filename) }}" download>
+				<button>Download PDF</button>
+			</a>
+		{% endif %}
+   {% endif %}
+{% endblock %}

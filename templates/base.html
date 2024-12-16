@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="ZenTools - Your ultimate destination for all-in-one online tools! Simplify tasks, enhance productivity, and streamline processes with our easy-to-use tools designed for individuals and businesses.">
+	<meta name="keywords" content="online,tools,online tools, productivity tools, PDF tools, image tools, social media tools, web tools, conversion tools, JPG to PDF, YouTube Tag Finder, JSON Formatter,Merge PDF, split PDF, combine PDF, convert PDF, Word to PDF, PDF to JPG, JPG to PDF, Youtube Thumbnail Grabber, youtube thumbnail download, youtube tag generator, ">
+	<meta name="robots" content="index, follow">
+	<meta name="googlebot" content="index, follow">
+	<meta name="bingbot" content="index, follow">
+	<meta name="theme-color" content="#4CAF50">
+	<meta name="author" content="ZenTools Team">
+	<meta property="og:title" content="ZenTools | Your One-Stop Destination for Essential Online Tools">
+	<meta property="og:description" content="ZenTools offers a variety of free and useful online tools designed to simplify tasks, enhance productivity, and streamline work processes for individuals and businesses alike.">
+	<meta property="og:type" content="website">
+    <title>ZenTools - {% block title %}Home{% endblock %}</title>
+	<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+	{% block styles %}{% endblock %}
+</head>
+<body>
+	<header>
+		<nav>
+			<a href="{{ url_for('home') }}" class="brand-name"><b>ZenTools</b></a>
+			<div class="menu-toggle" id="menu-toggle">
+				<span class="bar"></span>
+				<span class="bar"></span>
+				<span class="bar"></span>
+			</div>
+			<div class="menu" id="menu">
+				<a href="{{ url_for('home') }}"><b>Home</b></a>
+				<div class="dropdown">
+                    <a>Pdf<i class="fa fa-chevron-down" style="font-size:16px;color:red;margin-left:2px"></i></a>
+                    <div class="dropdown-content">
+						<a href="{{ url_for('convert_jpgs_to_pdf') }}">JPG to PDF</a>
+                        <a href="{{ url_for('pdf_to_word') }}">PDF to Word</a>
+						<a href="{{ url_for('word_to_pdf') }}">Word to PDF</a>
+						<a href="{{ url_for('merge_pdf') }}">Merge PDF</a>
+						<a href="{{ url_for('protect_pdf') }}">Protect PDF</a>
+						<a href="{{ url_for('unlock_pdf') }}">Unlock PDF</a>
+                    </div>
+                </div>
+				<div class="dropdown">
+                    <a>Image<i class="fa fa-chevron-down" style="font-size:16px;color:red;margin-left:2px"></i></a>
+                    <div class="dropdown-content">
+						<a href="{{ url_for('image_to_base64') }}">Image to Base64</a>
+                        <a href="{{ url_for('base64_to_image') }}">Base64 to Image</a>
+						<a href="{{ url_for('compress_image') }}">Compress Image</a>
+						<a href="{{ url_for('invert_image') }}">Invert Image Colors</a>
+						<a href="{{ url_for('convert_to_black_and_white') }}">Black and White</a>
+						<a href="{{ url_for('convert_jpg_to_png') }}">JPG to PNG</a>
+						<a href="{{ url_for('convert_png_to_jpg') }}">PNG to JPG</a>
+						<a href="{{ url_for('convert_webp_to_jpg') }}">WEBP to JPG</a>
+                    </div>
+                </div>
+				<div class="dropdown">
+                    <a>Social Media<i class="fa fa-chevron-down" style="font-size:16px;color:red;margin-left:2px"></i></a>
+                    <div class="dropdown-content">
+						<a href="{{ url_for('youtube_tags') }}">YouTube Video Tag Finder</a>
+                        <a href="{{ url_for('youtube_thumbnail_grabber') }}">Youtube Thumbnail Grabber</a>
+                    </div>
+                </div>
+				<div class="dropdown">
+                    <a>Web<i class="fa fa-chevron-down" style="font-size:16px;color:red;margin-left:2px"></i></a>
+                    <div class="dropdown-content">
+						<a href="{{ url_for('jsonformatter') }}">JSON Formatter</a>
+						<a href="{{ url_for('json_minify') }}">JSON Minify</a>
+						<a href="{{ url_for('convert_json_to_xml') }}">JSON to XML</a>
+						<a href="{{ url_for('html_beautify') }}">HTML Beautify</a>
+						<a href="{{ url_for('css_beautify') }}">CSS Beautify</a>
+                    </div>
+                </div>
+				<div class="dropdown">
+                    <a>Conversion<i class="fa fa-chevron-down" style="font-size:16px;color:red;margin-left:2px"></i></a>
+                    <div class="dropdown-content">
+						<a href="{{ url_for('currency_conversion') }}">Currency Conversion</a>
+                        <a href="{{ url_for('unit_conversion') }}">Unit Conversion</a>
+                    </div>
+                </div>
+				<a href="{{ url_for('about_us') }}">About Us</a>
+				<a href="{{ url_for('contact_us') }}">Contact Us</a>
+				<a href="{{ url_for('paid_tools') }}">Paid Tools</a>
+			</div>
+		</nav>
+	</header>
+
+	<div class="content">
+        {% block content %}{% endblock %}
+    </div>
+	
+	<footer>
+		<p>&copy; 2024 ZenTools | Simplify Your Tasks, Enhance Your Productivity | <a href="{{ url_for('about_us') }}">About Us</a> | <a href="{{ url_for('contact_us') }}">Contact Us</a></p>
+	</footer>
+
+
+	<script>
+		const menuToggle = document.getElementById('menu-toggle');
+		const menu = document.getElementById('menu');
+
+		menuToggle.addEventListener('click', () => {
+			menu.classList.toggle('active'); // Toggle the menu visibility
+		});
+	</script>
+</body>
+</html>
+	

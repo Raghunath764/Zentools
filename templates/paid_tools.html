@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block title %}Paid Tools{% endblock %}
+
+{% block styles %}
+   <style>
+		h1 {
+			text-align: center;
+			color: #2c3e50;
+			margin-bottom: 30px;
+			font-size: 2.5em;
+			animation: fadeIn 1s ease-in-out;
+			margin-top: 100px; /* Add margin to offset the fixed header */
+		}
+		
+		/* Animation for the heading */
+        @keyframes fadeIn {
+            from {
+                opacity: 0; /* Start invisible */
+                transform: translateY(-20px); /* Move up slightly */
+            }
+            to {
+                opacity: 1; /* Fully visible */
+                transform: translateY(0); /* Back to original position */
+            }
+        }
+	</style>
+{% endblock %}
+
+{% block content %}
+	<header>
+		<nav>
+			<a href="{{ url_for('home') }}" class="brand-name"><b>ZenTools</b></a>
+			<div class="menu-toggle" id="menu-toggle">
+				<span class="bar"></span>
+				<span class="bar"></span>
+				<span class="bar"></span>
+			</div>
+			<div class="menu" id="menu">
+				<a href="{{ url_for('home') }}"><b>Home</b></a>
+				<a href="{{ url_for('about_us') }}">About Us</a>
+				<a href="{{ url_for('contact_us') }}">Contact Us</a>
+				<a href="{{ url_for('paid_tools') }}">Paid Tools</a>
+				<a href="{{ url_for('logout') }}">Logout</a>
+			</div>
+		</nav>
+	</header>
+
+	<h1>Welcome to Paid ZenTools Page</h1>
+    <h2><marquee>This is the protected page where paid tools will be accessible in the future.</marquee></h2>
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block title %}Word To PDF{% endblock %}
+
+{% block styles %}
+	<style>	
+		button, .btn {
+        background-color: #4CAF50; /* Green */
+        color: white;
+        padding: 10px 15px;
+        margin: 10px 5px;
+        border: none;
+        cursor: pointer;
+        text-decoration: none;
+		}	
+
+		button:hover, .btn:hover {
+        background-color: #45a049;
+		}
+		h1 {
+			text-align: center;
+			color: #2c3e50;
+			margin-bottom: 30px;
+			font-size: 2.5em;
+			margin-top: 100px; /* Add margin to offset the fixed header */
+		}
+	</style>
+{% endblock %}
+
+{% block content %}
+	<h1>Convert Word to PDF Tool</h1>
+	<p>Make DOC and DOCX files easy to read by converting them to PDF.</p>
+    <form method="POST" enctype="multipart/form-data">
+		<label for="pdf_file">Upload Your Word File:</label>
+        <input type="file" name="docx_file" accept=".docx" required>
+		<br>
+        <button type="submit">Convert Word File</button>
+    </form>
+	
+    {% if pdf_filename %}
+		<h3>Conversion Successful! Click below to download your PDF:</h3>
+		<a href="{{ url_for('download_file', filename=pdf_filename) }}" download>
+				<button>Download PDF File</button>
+		</a>
+    {% endif %}
+{% endblock %}

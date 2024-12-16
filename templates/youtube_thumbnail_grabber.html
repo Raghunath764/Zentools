@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+
+{% block title %}Youtube Thumbnail Grabber{% endblock %}
+
+{% block styles %}
+<style>
+		.converted_Image{
+            width: 320px;
+            height: 180px;
+            margin-top: 10px;
+        }
+		
+		#bwCanvas {
+        border: 2px dashed blue; /* Blue border for the canvas */
+        margin: 10px auto;
+        border-radius: 10px; /* Optional rounded corners */
+		}
+		
+		button, .btn {
+        background-color: #4CAF50; /* Green */
+        color: white;
+        padding: 10px 15px;
+        margin: 10px 5px;
+        border: none;
+        cursor: pointer;
+        text-decoration: none;
+		}	
+
+		button:hover, .btn:hover {
+        background-color: #45a049;
+		}
+		
+		.video-info {
+            margin-bottom: 20px;
+        }
+        .video-thumbnail {
+            width: 320px;
+            height: 180px;
+            margin-top: 10px;
+        }
+        .tags-container {
+            margin-top: 20px;
+            padding: 10px;
+            border: 2px solid #333; /* Adding a border */
+            border-radius: 5px; /* Rounded corners */
+            background-color: #f9f9f9; /* Light background */
+            display: flex;
+            flex-wrap: wrap; /* Allows tags to wrap onto the next line */
+        }
+        .tag-box {
+            margin: 5px;
+            padding: 10px;
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            font-weight: bold;
+            text-transform: capitalize;
+        }
+        .copy-button {
+            margin-top: 20px;
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .copy-button:hover {
+            background-color: #45a049;
+        }
+		
+		h1 {
+			text-align: center;
+			color: #2c3e50;
+			margin-bottom: 30px;
+			font-size: 2.5em;
+			margin-top: 100px; /* Add margin to offset the fixed header */
+		}
+	</style>
+{% endblock %}
+
+{% block content %}
+	<div class="container">
+        <h1>Youtube Thumbnail Grabber</h1>
+		<p>Youtube thumbnail grabber is a tool that allows you to capture all of the thumbnails for a video on YouTube.</p>
+		<p>Bloggers and graphic designers frequently want YouTube thumbnails. You won't be able to acquire youtube video thumbnails from YouTube, but you can get them through <a href="{{ url_for('home') }}">ZenTools</a>.</p>
+		<p>To get the youtube thumbnail from any public YouTube video enter the video URL below and click "Get Tags".</p>
+        <form method="POST">
+            <input type="text" name="video_url" placeholder="Enter YouTube Video URL here" required style="width: 100%; max-width: 400px; padding: 10px; margin-bottom: 10px;">
+			<br>
+            <button type="submit">Get Thumbnail</button>
+        </form>
+
+		{% if error %}
+			<p style="color: red;">{{ error }}</p>
+		{% else %}
+			{% if title %}
+				<h2>Thumbnails from "{{ title }}"</h2>
+				{% for size, url in thumbnail_urls.items() %}
+					<div>
+						<h3>{{ size }} Thumbnail:</h3>
+						<img src="{{ url }}" alt="{{ size }} thumbnail" style="max-width: 100%; height: auto;">
+						<br>
+						<a href="{{ url_for('download_file', filename=thumbnail_filenames[size]) }}" download>
+							<button>Download {{ size }} Thumbnail</button>
+						</a>
+						<br><br>
+					</div>
+				{% endfor %}
+			{% endif %}
+		{% endif %} 
+    </div>
+{% endblock %}

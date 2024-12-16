@@ -1,0 +1,140 @@
+{% extends 'base.html' %}
+
+{% block title %}Unit Conversion{% endblock %}
+
+{% block styles %}
+	<style>
+        .result {
+            display: none; /* Hide the result initially */
+        }
+		
+		button, .btn {
+        background-color: #4CAF50; /* Green */
+        color: white;
+        padding: 10px 15px;
+        margin: 10px 5px;
+        border: none;
+        cursor: pointer;
+        text-decoration: none;
+		}	
+
+		button:hover, .btn:hover {
+        background-color: #45a049;
+		}
+		
+		h1 {
+			text-align: center;
+			color: #2c3e50;
+			margin-bottom: 30px;
+			font-size: 2.5em;
+			margin-top: 100px; /* Add margin to offset the fixed header */
+		}
+    </style>
+
+{% endblock %}
+
+{% block content %}
+
+	<div class="container">
+        <h1>Unit Conversion Tool</h1>
+
+        <!-- Form for unit conversion -->
+        <form action="/convert_unit" method="POST">
+            <div>
+                <label for="category">Select Category:</label>
+                <select id="category" name="category" onchange="updateUnits()" required>
+                    <option value="length">Length</option>
+                    <option value="weight">Weight</option>
+                    <option value="temperature">Temperature</option>
+                </select>
+            </div>
+			<br>
+            <div>
+                <label for="from_unit">From Unit:</label>
+                <select id="from_unit" name="from_unit" required>
+                    <!-- Dynamic options will be added here based on category -->
+                </select>
+            </div>
+			<br>
+            <div>
+                <label for="to_unit">To Unit:</label>
+                <select id="to_unit" name="to_unit" required>
+                    <!-- Dynamic options will be added here based on category -->
+                </select>
+            </div>
+			<br>
+            <div>
+                <label for="value">Enter Value:</label>
+                <input type="number" id="value" name="value" required>
+            </div>
+			<br>
+            <button type="submit">Convert</button>
+        </form>
+
+        <!-- Result display -->
+        {% if result %}
+            <div class="result" id="result" style="display:block;">
+                <h3>Result:</h3>
+                <p>{{ value }} {{ from_unit }} = {{ result }} {{ to_unit }}</p>
+            </div>
+        {% endif %}
+    </div>
+
+	<script>
+        const units = {
+            length: [
+                { symbol: 'm', name: 'Meter' },
+                { symbol: 'km', name: 'Kilometer' },
+                { symbol: 'cm', name: 'Centimeter' },
+                { symbol: 'mm', name: 'Millimeter' },
+                { symbol: 'in', name: 'Inch' },
+                { symbol: 'ft', name: 'Foot' }
+            ],
+            weight: [
+                { symbol: 'kg', name: 'Kilogram' },
+                { symbol: 'g', name: 'Gram' },
+                { symbol: 'mg', name: 'Milligram' },
+                { symbol: 'lb', name: 'Pound' },
+                { symbol: 'oz', name: 'Ounce' }
+            ],
+            temperature: [
+                { symbol: 'C', name: 'Celsius' },
+                { symbol: 'F', name: 'Fahrenheit' },
+                { symbol: 'K', name: 'Kelvin' }
+            ]
+        };
+
+        // Function to update the unit options based on selected category
+        function updateUnits() {
+            const category = document.getElementById('category').value;
+            const fromUnit = document.getElementById('from_unit');
+            const toUnit = document.getElementById('to_unit');
+
+            // Clear existing options
+            fromUnit.innerHTML = '';
+            toUnit.innerHTML = '';
+
+            const selectedUnits = units[category];
+
+            selectedUnits.forEach(unit => {
+                // Create 'From Unit' option
+                const fromOption = document.createElement('option');
+                fromOption.value = unit.symbol;
+                fromOption.textContent = `${unit.symbol} (${unit.name})`;
+                fromUnit.appendChild(fromOption);
+
+                // Create 'To Unit' option
+                const toOption = document.createElement('option');
+                toOption.value = unit.symbol;
+                toOption.textContent = `${unit.symbol} (${unit.name})`;
+                toUnit.appendChild(toOption);
+            });
+        }
+
+        // Call updateUnits when the page loads to set default category units
+        window.onload = function() {
+            updateUnits();
+        };
+    </script>
+
+{% endblock %}

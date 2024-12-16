@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block title %}About Us{% endblock %}
+
+{% block styles %}
+	<style>
+			h1 {
+				text-align: center;
+				color: #2c3e50;
+				margin-bottom: 30px;
+				font-size: 2.5em;
+				animation: fadeIn 1s ease-in-out;
+				margin-top: 100px; /* Add margin to offset the fixed header */
+			}
+
+			/* Animation for the About Us content */
+			@keyframes fadeIn {
+				from {
+					opacity: 0;
+					transform: translateY(-20px);
+				}
+				to {
+					opacity: 1;
+					transform: translateY(0);
+				}
+			}
+
+			/* About Us Styles */
+			.container {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				justify-content: center;
+				width: 100%;
+				max-width: 1200px; /* Prevents stretching on large screens */
+				margin-left: auto;
+				margin-right: auto;
+			}
+
+			.about-content {
+				background-color: #e7f5ff;
+				padding: 30px;
+				border-radius: 8px;
+				box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+				width: 100%;
+				max-width: 600px; /* Limits the width for better layout */
+				text-align: center;
+				animation: fadeIn 1s ease-in-out;
+			}
+		</style>
+{% endblock %}
+
+{% block content %}
+	<h1>About Us</h1>
+    <div class="container">
+        <div class="about-content">
+			<p><b>Simplify Your Tasks, Enhance Your Productivity.</b></p>
+            <p>ZenTools is dedicated to providing simple and efficient online tools that help users with various tasks. Our team is passionate about technology and strives to make everyday tasks easier for everyone.</p>
+            <p>We believe in accessibility and user-friendliness, ensuring that our tools are available to everyone, everywhere.</p>
+        </div>
+    </div>
+{% endblock %}

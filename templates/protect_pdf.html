@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block title %}Protect PDF file{% endblock %}
+
+{% block styles %}
+	<style>
+		button, .btn {
+        background-color: #4CAF50; /* Green */
+        color: white;
+        padding: 10px 15px;
+        margin: 10px 5px;
+        border: none;
+        cursor: pointer;
+        text-decoration: none;
+		}	
+
+		button:hover, .btn:hover {
+        background-color: #45a049;
+		}
+		
+		h1 {
+			text-align: center;
+			color: #2c3e50;
+			margin-bottom: 30px;
+			font-size: 2.5em;
+			margin-top: 100px; /* Add margin to offset the fixed header */
+		}
+	</style>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h1>Protect Your PDF with a Password</h1>
+		<p>Remove PDF password security, giving you the freedom to use your PDFs as you want.</p>
+
+		<form action="/protect_pdf" method="POST" enctype="multipart/form-data">
+			<label for="pdf_file">Upload PDF:</label>
+			<input type="file" name="pdf_file" accept=".pdf" required><br><br>
+			
+			<label for="password">Enter Password:</label>
+			<input type="password" name="password" required><br><br>
+			
+			<button type="submit">Encrypt PDF</button>
+		</form>
+		
+		{% if error %}
+			<p style="color:red;">{{ error }}</p>
+		{% else %}
+			{% if encrypted_pdf_path %}
+				<h3>PDF has been encrypted successfully!</h3>
+				<a href="{{ url_for('download_file', filename=encrypted_pdf_path) }}" download>
+					<button>Download Encrypted PDF</button>
+				</a>
+			{% endif %}
+		{% endif %}
+    </div>
+{% endblock %}

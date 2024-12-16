@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+
+{% block title %}YouTube Video Tag Finder{% endblock %}
+
+{% block styles %}
+<style>
+		button, .btn {
+        background-color: #4CAF50; /* Green */
+        color: white;
+        padding: 10px 15px;
+        margin: 10px 5px;
+        border: none;
+        cursor: pointer;
+        text-decoration: none;
+		}	
+
+		button:hover, .btn:hover {
+        background-color: #45a049;
+		}
+		
+		.video-info {
+            margin-bottom: 20px;
+        }
+        .video-thumbnail {
+            width: 320px;
+            height: 180px;
+            margin-top: 10px;
+        }
+        .tags-container {
+            margin-top: 20px;
+            padding: 10px;
+            border: 2px solid #333; /* Adding a border */
+            border-radius: 5px; /* Rounded corners */
+            background-color: #f9f9f9; /* Light background */
+            display: flex;
+            flex-wrap: wrap; /* Allows tags to wrap onto the next line */
+        }
+        .tag-box {
+            margin: 5px;
+            padding: 10px;
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            font-weight: bold;
+            text-transform: capitalize;
+        }
+        .copy-button {
+            margin-top: 20px;
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .copy-button:hover {
+            background-color: #45a049;
+        }
+		
+		h1 {
+			text-align: center;
+			color: #2c3e50;
+			margin-bottom: 30px;
+			font-size: 2.5em;
+			margin-top: 100px; /* Add margin to offset the fixed header */
+		}
+	</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+        <h1>YouTube Video Tag Finder Tool</h1>
+		<p>YouTube tags are the hidden metatags associated with videos on YouTube. Not all videos have these tags as it’s up to the video publisher to add them when they upload the video.</p>
+		<p><b>YouTube Video Tag Finder</b> tool is a handy way of extracting and revealing these meta tags associated with any public video. Extracting YouTube Tags can be very insightful to understand how competitor videos and other high-performing videos are using these tags to boost their performance.</p>
+		<p>Tags are not to be confused with HashTags which are displayed in the video description and above the video title.</p>
+		<p>To exctract the tags from any public YouTube video enter the video URL below and click "Get Tags".</p>
+        <form method="POST">
+            <input type="text" name="video_url" placeholder="Enter YouTube Video URL here" required style="width: 100%; max-width: 400px; padding: 10px; margin-bottom: 10px;">
+			<br>
+            <button type="submit">GET TAGS</button>
+        </form>
+
+		{% if error %}
+			<p style="color: red;">{{ error }}</p>
+		{% else %}
+			{% if title %}
+				<div class="video-info">
+					<h2>Tags from "{{ title }}"</h2>
+					<img src="{{ thumbnail }}" alt="Video Thumbnail" class="video-thumbnail">
+				</div>
+			{% endif %}
+			
+			{% if tags %}
+				<div class="tags-container">
+					{% for tag in tags %}
+						<div class="tag-box">{{ tag }}</div>
+					{% endfor %}
+				</div>
+
+				<!-- Copy button functionality -->
+				<button class="copy-button" onclick="copyTags()">Copy tags to clipboard</button>
+			{% endif %}	
+		{% endif %} 
+    </div>
+	 <script>
+        function copyTags() {
+            const tags = Array.from(document.querySelectorAll('.tag-box')).map(tag => tag.textContent).join(', ');
+            navigator.clipboard.writeText(tags)
+                .then(() => alert('Tags copied to clipboard!'))
+                .catch(err => alert('Error copying tags: ' + err));
+        }
+    </script>
+{% endblock %}

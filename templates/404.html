@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block title %}404{% endblock %}
+
+{% block styles %}
+	<style>	
+		.btn {
+        background-color: #4CAF50; /* Green */
+        color: white;
+        padding: 10px 15px;
+        margin: 10px 5px;
+        border: none;
+        cursor: pointer;
+        text-decoration: none;
+		}	
+
+		button:hover, .btn:hover {
+        background-color: #45a049;
+		}
+		
+		/* Animation for the heading */
+        @keyframes fadeIn {
+            from {
+                opacity: 0; /* Start invisible */
+                transform: translateY(-20px); /* Move up slightly */
+            }
+            to {
+                opacity: 1; /* Fully visible */
+                transform: translateY(0); /* Back to original position */
+            }
+        }
+
+        h4 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px; /* Reduced margin */
+            font-size: 2.5em;
+            animation: fadeIn 1s ease-in-out; /* Apply animation */
+			margin-top: 100px; /* Add margin to offset the fixed header */
+        }
+	</style>
+{% endblock %}
+
+{% block content %}
+	<h4>Something’s wrong here… The page you're looking for does not exist.</h4>
+    <p><a href="{{ url_for('home') }}" class="btn">Back to Home Page</a></p>
+{% endblock %}

@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+
+{% block title %}Image to BASE64 Converter{% endblock %}
+
+{% block styles %}
+    <style>
+        #base64_text {
+            width: 100%;
+            height: 200px;
+            overflow-y: scroll;
+            resize: none;
+        }
+        button, .btn {
+            background-color: #4CAF50; /* Green */
+            color: white;
+            padding: 10px 15px;
+            margin: 10px 5px;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+			display: inline-block; /* Prevents button from taking full width */
+        }
+
+        button:hover, .btn:hover {
+            background-color: #45a049;
+        }
+		
+		h1 {
+			text-align: center;
+			color: #2c3e50;
+			margin-bottom: 30px;
+			font-size: 2.5em;
+			margin-top: 100px; /* Add margin to offset the fixed header */
+		}
+    </style>
+{% endblock %}
+
+{% block content %}
+	<h1>Image to Base64 Converter</h1>
+		<p>Convert Image to Base64 online using a free tool which allows you to decode Image as Base64.Please note that the Image to Base64 encoder accepts any images types with a size of up to 50 MB.If you are looking for the reverse process, check <a href="{{ url_for('base64_to_image') }}">Base64 to Image</a>.</p>
+        <!-- Image Upload Form -->
+        <form action="/image_to_base64" method="POST" enctype="multipart/form-data">
+			<label for="image_file">Upload Image:</label>
+			<input type="file" name="image_file" id="image_file" accept="image/*" required>
+			<br>
+			<button type="submit" class="btn">Convert to Base64</button>
+        </form>
+
+        {% if base64_string %}
+        <!-- Display Base64 String in a scrollable textarea -->
+        <h3>Base64 Encoded Image:</h3>
+        <textarea id="base64_text" readonly>{{ base64_string }}</textarea>
+		<a><button onclick="copyBase64()">Copy Base64</button></a>
+        {% endif %}
+
+    <script>
+        // Function to copy the Base64 text
+        function copyBase64() {
+			var copyText = document.getElementById("base64_text");
+
+			// Check if the Clipboard API is supported
+			if (navigator.clipboard) {
+				navigator.clipboard.writeText(copyText.value).then(function() {
+					// Show a success message
+					alert("Base64 string copied to clipboard!");
+				}).catch(function(err) {
+					// Handle errors if any
+					alert("Failed to copy text: " + err);
+				});
+			} else {
+				// Fallback for browsers that do not support Clipboard API
+				copyText.select();
+				document.execCommand("copy");
+
+				// Show a success message
+				alert("Base64 string copied to clipboard!");
+			}
+		}
+
+    </script>
+{% endblock %}

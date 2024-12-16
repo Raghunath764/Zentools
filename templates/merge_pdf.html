@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block title %}Merge PDF{% endblock %}
+
+{% block styles %}
+	<style>	
+		button, .btn {
+        background-color: #4CAF50; /* Green */
+        color: white;
+        padding: 10px 15px;
+        margin: 10px 5px;
+        border: none;
+        cursor: pointer;
+        text-decoration: none;
+		}	
+
+		button:hover, .btn:hover {
+        background-color: #45a049;
+		}
+		
+		h1 {
+			text-align: center;
+			color: #2c3e50;
+			margin-bottom: 30px;
+			font-size: 2.5em;
+			margin-top: 100px; /* Add margin to offset the fixed header */
+		}
+	</style>
+{% endblock %}
+
+{% block content %}
+	<div class="container">
+		<h1>Merge PDF</h1>
+		<p>Easily merge multiple pdfs into one pdf in the order you want.</p>
+		<form action="/merge_pdf" method="POST" enctype="multipart/form-data">
+			<label for="pdf_file">Upload PDF File:</label>
+			<input type="file" name="pdf_files" class="file-input" multiple required>
+			<br><br>
+			<button type="submit" class="submit-btn">Merge PDFs</button>
+		</form>
+
+		{% if merged_pdf_filename %}
+			<div class="success">
+				<h3>Merged successfully!</h3>
+					<a href="{{ url_for('download_file', filename=merged_pdf_filename) }}" download>
+						<button>Download Merged PDF</button>
+					</a>
+			</div>
+		{% endif %}
+	</div>
+{% endblock %}

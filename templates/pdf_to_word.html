@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block title %}PDF To Word{% endblock %}
+
+{% block styles %}
+	<style>
+		button, .btn {
+        background-color: #4CAF50; /* Green */
+        color: white;
+        padding: 10px 15px;
+        margin: 10px 5px;
+        border: none;
+        cursor: pointer;
+        text-decoration: none;
+		}	
+
+		button:hover, .btn:hover {
+        background-color: #45a049;
+		}
+		
+		h1 {
+			text-align: center;
+			color: #2c3e50;
+			margin-bottom: 30px;
+			font-size: 2.5em;
+			margin-top: 100px; /* Add margin to offset the fixed header */
+		}
+	</style>
+{% endblock %}
+
+{% block content %}
+	<h1>Convert PDF To Word Tool</h1>
+	<p>Easily convert your PDF files into easy to edit DOC and DOCX documents. The converted WORD document is almost 100% accurate.</p>
+   <form method="POST" enctype="multipart/form-data">
+        <label for="pdf_file">Upload Your PDF File:</label>
+        <input type="file" id="pdf_file" name="pdf_file" accept=".pdf">
+		<br>
+        <button type="submit">Convert PDF File</button>
+    </form>
+
+    {% if docx_filename %}
+        <h3>Conversion Successful! Please Download Your Convert Word File</h3>
+		<a href="{{ url_for('download_file', filename=docx_filename) }}" download>
+				<button>Download Word File</button>
+		</a>
+    {% endif %}
+{% endblock %}

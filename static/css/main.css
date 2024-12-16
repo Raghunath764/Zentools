@@ -1,0 +1,165 @@
+/* General Styles */
+body {
+	font-family: 'Poppins', sans-serif;
+	margin: 0;
+	background-color: #f8f9fa;
+	color: #333;
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh;
+}
+
+/* Header */
+header {
+	background: #4CAF50;
+	color: white;
+	padding: 20px 0;
+	text-align: center;
+	position: fixed;
+	width: 100%;
+	z-index: 1000;
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+header h1 {
+	margin: 0;
+	font-weight: 600;
+	font-size: 1.8em;
+}
+
+nav {
+	display: flex;
+	justify-content: center; /* Center the navigation links */
+	align-items: center;
+	margin-top: 10px;
+}
+
+nav a {
+	margin: 0 15px; /* Adjust space between the links */
+	text-decoration: none;
+	font-weight: 400;
+	color: #FFD700;
+}
+
+nav a:hover {
+	color: #000000; /* Change color on hover */
+}
+
+/* Footer */
+footer {
+	background: #4CAF50;
+	color: white;
+	text-align: center;
+	padding: 10px 20px;
+	margin-top: auto;
+	box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.1);
+}
+
+footer p {
+	margin: 0;
+}
+
+footer a {
+	color: #FFD700;
+	text-decoration: none;
+	font-weight: 600;
+}
+
+footer a:hover {
+	color: #000000;
+}
+
+/* Hamburger Menu */
+.menu-toggle {
+	display: none;
+	flex-direction: column;
+	cursor: pointer;
+}
+
+.menu-toggle .bar {
+	background-color: white;
+	height: 3px;
+	margin: 4px;
+	width: 25px;
+}
+
+.menu {
+	display: flex;
+	justify-content: Center;
+	flex-grow: 1;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 768px) {
+	.menu {
+		display: none;
+		flex-direction: column;
+		position: absolute;
+		top: 60px;
+		right: 20px;
+		background-color: #4CAF50;
+		width: 200px;
+		border-radius: 5px;
+		box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+		padding: 10px 0;
+	}
+
+	.menu.active {
+		display: flex;
+	}
+
+	.menu a {
+		padding: 10px 20px;
+		text-align: center;
+	}
+
+	.menu-toggle {
+		display: flex;
+	}
+}
+
+.brand-name {
+    font-size: 1.5em; /* Adjust size as needed */
+    font-weight: bold; /* Optional, if you want it to stay bold */
+	margin-left:100px;
+}
+
+/* Dropdown Menu Styles */
+.dropdown {
+	position: relative;
+}
+
+.dropdown > a {
+	cursor: pointer;
+}
+
+.dropdown-content {
+	display: none;
+	position: absolute;
+	top: 100%;
+	left: 0;
+	background: #4CAF50;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+	border-radius: 5px;
+	overflow: hidden;
+	z-index: 1000;
+}
+
+.dropdown-content a {
+	display: block;
+	padding: 10px 20px;
+	text-align: left;
+	white-space: nowrap;
+	color: #FFD700;
+	background: #4CAF50;
+	border-bottom: 1px solid #555;
+}
+
+.dropdown-content a:hover {
+	color: #000000;
+}
+
+.dropdown:hover .dropdown-content {
+	display: block;
+}
+

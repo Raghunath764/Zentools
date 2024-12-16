@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+
+{% block title %}BASE64 to Image Converter{% endblock %}
+
+{% block styles %}
+	<style>
+		.converted_Image{
+            width: 320px;
+            height: 180px;
+            margin-top: 10px;
+        }
+		
+        button, .btn {
+            background-color: #4CAF50; /* Green */
+            color: white;
+            padding: 10px 15px;
+            margin: 10px 5px;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        button:hover, .btn:hover {
+            background-color: #45a049;
+        }
+		
+		h1 {
+			text-align: center;
+			color: #2c3e50;
+			margin-bottom: 30px;
+			font-size: 2.5em;
+			margin-top: 100px; /* Add margin to offset the fixed header */
+		}
+		textarea {
+			width: 50%; /* Set width to 50% */
+			height: 200px; /* Adjust height as needed */
+			display: block; /* Ensure it's a block element for centering */
+			box-sizing: border-box; /* Include padding/border in width calculation */
+			font-size: 1rem; /* Set font size for readability */
+			resize: vertical; /* Allow users to resize vertically */
+		}
+
+		/* Adjust for smaller screens using media queries */
+		@media (max-width: 768px) {
+			textarea {
+				width: 70%; /* Wider on medium screens */
+				height: 150px; /* Adjust height for smaller devices */
+			}
+		}
+
+		@media (max-width: 480px) {
+			textarea {
+				width: 90%; /* Almost full width on very small screens */
+				height: 120px; /* Further reduce height for small screens */
+			}
+		}
+
+	</style>
+{% endblock %}
+
+{% block content %}
+	<h1>Base64 to Image Converter</h1>
+	<p>Convert Base64 to image online using a free decoding tool which allows you to decode Base64 as image and preview it directly in the browser.And, of course, you will have a special link to download the image to your device. If you are looking for the reverse process, check <a href="{{ url_for('image_to_base64') }}">Image to Base64</a>.</p>
+    <form method="POST" action="{{ url_for('base64_to_image') }}" enctype="multipart/form-data">
+        <textarea name="base64_string" placeholder="Enter Base64 string here"></textarea>
+        <br>
+        <button type="submit">Decode Base64 to Image</button>
+    </form>
+
+    {% if image_path %}
+        <h2>Preview Image:</h2>
+        <img src="{{ url_for('download_file', filename=filename) }}" alt="Decoded Image" class="converted_Image">
+		<br>
+		<br>
+		<a href="{{ url_for('download_file', filename=filename) }}" download>
+				<button>Download Converted Image</button>
+		</a>
+	{% elif error_message %}
+		<div style="color: red; margin-top: 20px;">
+			<p>{{ error_message }}</p>
+		</div>
+    {% endif %}
+{% endblock %}
