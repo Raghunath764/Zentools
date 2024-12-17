@@ -961,5 +961,5 @@ def html_beautify():
     return render_template('html_beautify.html', html_data=html_data, beautified_html=beautified_html, error_message=error_message)
 
 
-if __name__ == '__main__':
-    app.run(debug=True)
+#if __name__ == '__main__':
+    #app.run(debug=True)
