@@ -72,6 +72,16 @@
                     </div>
                 </div>
 				<div class="dropdown">
+                    <a>Text<i class="fa fa-chevron-down" style="font-size:16px;color:red;margin-left:2px"></i></a>
+                    <div class="dropdown-content">
+						<a href="{{ url_for('password_generator') }}">Password Generator</a>
+						<a href="{{ url_for('Character_counter') }}">Character Counter</a>
+                        <a href="{{ url_for('number_to_words') }}">Number to Words Converter</a>
+						<a href="{{ url_for('uppercase_text') }}">Uppercase Text</a>
+						<a href="{{ url_for('lowercase_text') }}">Lowercase Text</a>
+                    </div>
+                </div>
+				<div class="dropdown">
                     <a>Conversion<i class="fa fa-chevron-down" style="font-size:16px;color:red;margin-left:2px"></i></a>
                     <div class="dropdown-content">
 						<a href="{{ url_for('currency_conversion') }}">Currency Conversion</a>

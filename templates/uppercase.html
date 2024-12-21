@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+
+{% block title %}Uppercase Text{% endblock %}
+
+{% block styles %}
+	<style>		
+		button, .btn {
+        background-color: #4CAF50; /* Green */
+        color: white;
+        padding: 10px 15px;
+        margin: 10px 5px;
+		margin-left:20%;
+        border: none;
+        cursor: pointer;
+        text-decoration: none;
+		}	
+
+		button:hover, .btn:hover {
+        background-color: #45a049;
+		}
+		
+		/* Animation for the heading */
+        @keyframes fadeIn {
+            from {
+                opacity: 0; /* Start invisible */
+                transform: translateY(-20px); /* Move up slightly */
+            }
+            to {
+                opacity: 1; /* Fully visible */
+                transform: translateY(0); /* Back to original position */
+            }
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px; /* Reduced margin */
+            font-size: 2.5em;
+            animation: fadeIn 1s ease-in-out; /* Apply animation */
+			margin-top: 100px; /* Add margin to offset the fixed header */
+        }
+		.container {
+            max-width: 800px;
+            background-color: white;
+            padding: 20px;
+			border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+       textarea {
+			width: 50%; /* Set width to 50% */
+			height: 200px; /* Adjust height as needed */
+			display: block; /* Ensure it's a block element for centering */
+			box-sizing: border-box; /* Include padding/border in width calculation */
+			font-size: 1rem; /* Set font size for readability */
+			resize: vertical; /* Allow users to resize vertically */
+			margin-left: 5px;
+		}
+
+		/* Adjust for smaller screens using media queries */
+		@media (max-width: 768px) {
+			textarea {
+				width: 70%; /* Wider on medium screens */
+				height: 150px; /* Adjust height for smaller devices */
+			}
+		}
+
+		@media (max-width: 480px) {
+			textarea {
+				width: 90%; /* Almost full width on very small screens */
+				height: 120px; /* Further reduce height for small screens */
+			}
+		}
+	</style>
+{% endblock %}
+
+{% block content %}
+    <h1>Uppercase Text</h1>
+    <p style="margin: 10px 5px;">Convert your text to uppercase.</p>
+    
+    <textarea id="input-text" placeholder="Enter your text here..."></textarea>
+	<button id="copy-button">Copy to Clipboard</button>
+    <textarea id="Uppercase-text" placeholder="Uppercase version will appear here..." readonly></textarea>
+
+    <script>
+        document.getElementById("input-text").addEventListener("input", function() {
+            var uppercaseText = this.value.toUpperCase();
+            document.getElementById("Uppercase-text").value = uppercaseText;
+        });
+        document.getElementById("copy-button").addEventListener("click", function() {
+            var copyText = document.getElementById("Uppercase-text");
+            
+            copyText.select();
+            copyText.setSelectionRange(0, 99999);
+            document.execCommand("copy");
+            alert("Copied to clipboard: " + copyText.value);
+        });
+    </script>
+{% endblock %}

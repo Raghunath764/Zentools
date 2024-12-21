@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+
+{% block title %}Character counter{% endblock %}
+
+{% block styles %}
+	<style>		
+		button, .btn {
+        background-color: #4CAF50; /* Green */
+        color: white;
+        padding: 10px 15px;
+        margin: 10px 5px;
+        border: none;
+        cursor: pointer;
+        text-decoration: none;
+		}	
+
+		button:hover, .btn:hover {
+        background-color: #45a049;
+		}
+		
+		/* Animation for the heading */
+        @keyframes fadeIn {
+            from {
+                opacity: 0; /* Start invisible */
+                transform: translateY(-20px); /* Move up slightly */
+            }
+            to {
+                opacity: 1; /* Fully visible */
+                transform: translateY(0); /* Back to original position */
+            }
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px; /* Reduced margin */
+            font-size: 2.5em;
+            animation: fadeIn 1s ease-in-out; /* Apply animation */
+			margin-top: 100px; /* Add margin to offset the fixed header */
+        }
+		.container {
+            max-width: 800px;
+            background-color: white;
+            padding: 20px;
+			border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+       textarea {
+			width: 50%; /* Set width to 50% */
+			height: 200px; /* Adjust height as needed */
+			display: block; /* Ensure it's a block element for centering */
+			box-sizing: border-box; /* Include padding/border in width calculation */
+			font-size: 1rem; /* Set font size for readability */
+			resize: vertical; /* Allow users to resize vertically */
+			margin-left: 5px;
+		}
+
+		/* Adjust for smaller screens using media queries */
+		@media (max-width: 768px) {
+			textarea {
+				width: 70%; /* Wider on medium screens */
+				height: 150px; /* Adjust height for smaller devices */
+			}
+		}
+
+		@media (max-width: 480px) {
+			textarea {
+				width: 90%; /* Almost full width on very small screens */
+				height: 120px; /* Further reduce height for small screens */
+			}
+		}
+        pre {
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-size: 14px;
+        }
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        .button:hover {
+            background-color: #0056b3;
+        }
+			</style>
+{% endblock %}
+
+{% block content %}
+    <div>
+        <h1>Number to Words Converter</h1>
+        <p style="margin: 10px 5px;">Easily convert a number into readable words, which you can then copy.</p>
+        <label for="numberInput" style="font-size: 16px; font-weight: bold; display: block; margin: 10px 5px;">Enter a Number:</label>
+        <input type="text" id="numberInput" oninput="convertNumberToWords()" style="width: 20%; padding: 10px; font-size: 16px; margin: 0px 5px;">
+        
+        <label for="wordsOutput" style="font-size: 16px; font-weight: bold; display: block; margin: 10px 5px;">Number in Words:</label>
+        <textarea id="wordsOutput" readonly></textarea>
+        <button onclick="copyToClipboard()" style="padding: 10px 20px; font-size: 16px; cursor: pointer;margin: 10px 5px;">Copy</button>
+		<button onclick="resetText()" style="padding: 10px 20px; font-size: 16px; cursor: pointer;margin: 10px 5px;">Reset</button>
+    </div>
+	
+	<script>
+        function convertNumberToWords() {
+            const numberInput = document.getElementById("numberInput").value;
+
+            fetch("/convert_in_words", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ number: numberInput })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const wordsInput = document.getElementById("wordsOutput");
+                wordsInput.value = data.number_in_words;
+            })
+            .catch(error => {
+                document.getElementById("wordsOutput").value = "Error while converting the number or invalid input.";
+            });
+        }
+
+        function copyToClipboard() {
+            const wordsInput = document.getElementById("wordsOutput");
+            wordsInput.select();
+            wordsInput.setSelectionRange(0, 99999); // For mobile devices
+            document.execCommand("copy");
+            alert("Copied to clipboard: " + wordsInput.value);
+        }
+		
+		function resetText() {
+            const textArea = document.getElementById("wordsOutput");
+            textArea.value = "";
+			
+			const input = document.getElementById("numberInput");
+            input.value = "";
+		}
+    </script>
+{% endblock %}

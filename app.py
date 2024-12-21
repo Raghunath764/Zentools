@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for,flash,send_from_directory,session,send_file
+from flask import Flask, render_template, request, redirect, url_for,flash,send_from_directory,session,send_file,jsonify
 import requests 
 from docx import Document
 import os
@@ -24,6 +24,10 @@ import shutil
 import time
 import cssutils
 from bs4 import BeautifulSoup
+import inflect
+import string
+import random
+import secrets
 
 app = Flask(__name__)
 
@@ -38,6 +42,7 @@ os.makedirs(BASE_UPLOAD_DIR, exist_ok=True)
 os.makedirs(BASE_DOWNLOAD_DIR, exist_ok=True)
 
 INACTIVITY_TIMEOUT = 3600
+p = inflect.engine()
 
 # Conversion logic for different units
 def convert_value(value, from_unit, to_unit, category):
@@ -959,7 +964,84 @@ def html_beautify():
             error_message = "There is an issue with your HTML input. Please check and try again."
             
     return render_template('html_beautify.html', html_data=html_data, beautified_html=beautified_html, error_message=error_message)
+    
 
+@app.route('/Character_counter')
+def Character_counter():
+    return render_template('Character_counter.html')
 
-#if __name__ == '__main__':
-    #app.run(debug=True)
+@app.route('/count_Character', methods=['POST'])
+def count_Character():
+    text = request.json.get('text', '')
+    char_count = len(text)
+    word_count = len(text.split())
+    return jsonify({
+        'char_count': char_count,
+        'word_count': word_count
+    })
+    
+@app.route('/number_to_words')
+def number_to_words():
+    return render_template('number_to_words.html')
+
+@app.route('/convert_in_words', methods=['POST'])
+def convert_in_words():
+    number = request.json.get('number', '').replace(',', '')
+    try:
+        number_in_words = p.number_to_words(int(number)).replace(',', '')
+        number_in_words = ' '.join(word.capitalize() for word in number_in_words.replace('-', ' ').split())
+    except ValueError:
+        number_in_words = "Invalid input"
+    return jsonify({
+        'number_in_words': number_in_words
+    })
+    
+
+@app.route('/password-generator')
+def password_generator():
+    return render_template('password_generator.html')
+
+@app.route('/generate-password', methods=['POST'])
+def generate_password():
+    data = request.json
+    length = int(data.get('length', 12))  # Default length is 12 if not provided
+
+    # Validate the length (ensure it's within the range of 8 to 48)
+    if length < 8 or length > 48:
+        return jsonify({'password': 'Password length must be between 8 and 48 characters!'}), 400
+
+    # Define the character sets for each type of character
+    lowercase = string.ascii_lowercase
+    uppercase = string.ascii_uppercase
+    numbers = string.digits
+    symbols = string.punctuation
+
+    # Initialize the pool of characters based on selected checkboxes
+    password_characters = ""
+    if data.get('lowercase'):
+        password_characters += lowercase
+    if data.get('uppercase'):
+        password_characters += uppercase
+    if data.get('numbers'):
+        password_characters += numbers
+    if data.get('symbols'):
+        password_characters += symbols
+
+    if not password_characters:
+        return jsonify({'password': 'No criteria selected!'}), 400
+
+    password = ''.join(secrets.choice(password_characters) for _ in range(length))
+
+    return jsonify({'password': password})
+    
+@app.route('/lowercase_text')
+def lowercase_text():
+    return render_template('lowercase.html')
+    
+@app.route('/uppercase_text')
+def uppercase_text():
+    return render_template('uppercase.html')
+
+   
+if __name__ == '__main__':
+    app.run(debug=True)

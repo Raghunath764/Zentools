@@ -261,16 +261,46 @@
             <p>CSS Beautify allows you to transform your messy and minified CSS to a clean CSS.</p>
         </a>
 		
+		<a href="{{ url_for('password_generator') }}" class="tool-card">
+            <img src="{{ url_for('static', filename='images/password_generator.png') }}" alt="password_generator">
+            <h3>Password Generator</h3>
+            <p>Easily generate a secure and random password.</p>
+        </a>
+		
+		<a href="{{ url_for('Character_counter') }}" class="tool-card">
+            <img src="{{ url_for('static', filename='images/Character_counter.png') }}" alt="Character_counter">
+            <h3>Character counter</h3>
+            <p>A free tool for counting characters and words in real time.</p>
+        </a>
+		
+		<a href="{{ url_for('number_to_words') }}" class="tool-card">
+            <img src="{{ url_for('static', filename='images/number_to_words.png') }}" alt="number_to_words">
+            <h3>Number to Words Converter</h3>
+            <p>Easily convert a number into readable words, which you can then copy.</p>
+        </a>
+		
+		<a href="{{ url_for('uppercase_text') }}" class="tool-card">
+            <img src="{{ url_for('static', filename='images/uppercase.png') }}" alt="uppercase_text">
+            <h3>Uppercase Text</h3>
+            <p>Convert your text to uppercase.</p>
+        </a>
+		
+		<a href="{{ url_for('lowercase_text') }}" class="tool-card">
+            <img src="{{ url_for('static', filename='images/lowercase.png') }}" alt="lowercase_text">
+            <h3>Lowercase Text</h3>
+            <p>Convert your text to lowercase.</p>
+        </a>
+		
 		<a href="{{ url_for('currency_conversion') }}" class="tool-card">
             <img src="{{ url_for('static', filename='images/currency_converter.png') }}" alt="Currency Conversion">
             <h3>Currency Conversion</h3>
-            <p>Basic Currency conversion for all currency</p>
+            <p>Basic Currency conversion for all currency.</p>
         </a>
 
 		<a href="{{ url_for('unit_conversion') }}" class="tool-card">
             <img src="{{ url_for('static', filename='images/unit_conversion.png') }}" alt="Unit Conversion">
             <h3>Unit Conversion</h3>
-            <p>Basic unit conversion for Length,Weight and Temperature</p>
+            <p>Basic unit conversion for Length,Weight and Temperature.</p>
         </a>
 	</section>
 	<h2><marquee>More tools will be added, coming soon.</marquee></h2>

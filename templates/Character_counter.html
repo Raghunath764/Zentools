@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+
+{% block title %}Character counter{% endblock %}
+
+{% block styles %}
+	<style>		
+		button, .btn {
+        background-color: #4CAF50; /* Green */
+        color: white;
+        padding: 10px 15px;
+        margin: 10px 5px;
+        border: none;
+        cursor: pointer;
+        text-decoration: none;
+		}	
+
+		button:hover, .btn:hover {
+        background-color: #45a049;
+		}
+		
+		/* Animation for the heading */
+        @keyframes fadeIn {
+            from {
+                opacity: 0; /* Start invisible */
+                transform: translateY(-20px); /* Move up slightly */
+            }
+            to {
+                opacity: 1; /* Fully visible */
+                transform: translateY(0); /* Back to original position */
+            }
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px; /* Reduced margin */
+            font-size: 2.5em;
+            animation: fadeIn 1s ease-in-out; /* Apply animation */
+			margin-top: 100px; /* Add margin to offset the fixed header */
+        }
+		.container {
+            max-width: 800px;
+            background-color: white;
+            padding: 20px;
+			border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+       textarea {
+			width: 50%; /* Set width to 50% */
+			height: 200px; /* Adjust height as needed */
+			display: block; /* Ensure it's a block element for centering */
+			box-sizing: border-box; /* Include padding/border in width calculation */
+			font-size: 1rem; /* Set font size for readability */
+			resize: vertical; /* Allow users to resize vertically */
+			margin-left: 5px;
+		}
+
+		/* Adjust for smaller screens using media queries */
+		@media (max-width: 768px) {
+			textarea {
+				width: 70%; /* Wider on medium screens */
+				height: 150px; /* Adjust height for smaller devices */
+			}
+		}
+
+		@media (max-width: 480px) {
+			textarea {
+				width: 90%; /* Almost full width on very small screens */
+				height: 120px; /* Further reduce height for small screens */
+			}
+		}
+        pre {
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-size: 14px;
+        }
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        .button:hover {
+            background-color: #0056b3;
+        }
+			</style>
+{% endblock %}
+
+{% block content %}
+	<h1>Character counter</h1>
+	<p style="margin: 10px 5px;">Character Counter Tool is a free character counter that calculates the number of characters and words in a text in real time. This tool displays the total number of characters, including those with and without spaces, as well as the total number of words.</p>
+	<p style="margin: 10px 5px;">Character Counter keeps track of and reports on the number of characters and words in the text you input in real time. As a result, it's appropriate for writing texts with a word/character restriction.</p>
+    <div>
+        <textarea id="textInput" rows="10" cols="50" oninput="updateCounts()"></textarea>
+        <button onclick="resetText()">Reset Text</button>
+        <span style="margin-left: 20px;">Characters: <span id="charCount">0</span></span>
+        <span style="margin-left: 20px;">Words: <span id="wordCount">0</span></span>
+    </div>
+
+	<script>
+        function updateCounts() {
+            const textArea = document.getElementById("textInput");
+            const text = textArea.value;
+
+            fetch("/count_Character", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ text: text })
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("charCount").innerText = data.char_count;
+                document.getElementById("wordCount").innerText = data.word_count;
+            });
+        }
+
+        function resetText() {
+            const textArea = document.getElementById("textInput");
+            textArea.value = "";
+            updateCounts();
+        }
+    </script>
+
+{% endblock %}
