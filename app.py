@@ -155,7 +155,7 @@ def submit_contact():
 
 @app.route('/unit_conversion')
 def unit_conversion():
-    return render_template('unit_conversion.html')
+    return render_template('unit_conversion.html',show_features=True)
 
 @app.route('/convert_unit', methods=['POST'])
 def convert_unit():
@@ -172,7 +172,7 @@ def convert_unit():
 
 @app.route('/currency_conversion')
 def currency_conversion():
-    return render_template('currency_conversion.html')
+    return render_template('currency_conversion.html',show_features=True)
 
 @app.route('/convert_currency', methods=['POST'])
 def convert_currency():
@@ -185,9 +185,9 @@ def convert_currency():
     
     if exchange_rate:
         converted_amount = amount * exchange_rate
-        return render_template('currency_conversion.html', converted_amount=converted_amount, amount=amount, from_currency=from_currency, to_currency=to_currency)
+        return render_template('currency_conversion.html', converted_amount=converted_amount, amount=amount, from_currency=from_currency, to_currency=to_currency,show_features=True)
     else:
-        return render_template('currency_conversion.html', error="Currency conversion failed. Please try again.")
+        return render_template('currency_conversion.html', error="Currency conversion failed. Please try again.",show_features=True)
         
 @app.route('/pdf_to_word', methods=['GET', 'POST'])
 def pdf_to_word():
@@ -223,7 +223,7 @@ def pdf_to_word():
                 return f"Error during conversion: {str(e)}", 500
 
     # Render the same HTML file and pass the generated DOCX filename (if available)
-    return render_template('pdf_to_word.html', docx_filename=docx_filename)
+    return render_template('pdf_to_word.html', docx_filename=docx_filename,show_features=True)
        
 @app.route('/word_to_pdf', methods=['GET', 'POST'])
 def word_to_pdf():
@@ -259,7 +259,7 @@ def word_to_pdf():
             return "Invalid file format. Please upload a .docx file."
             
     # Render the same HTML file and pass the generated DOCX filename (if available)
-    return render_template('word_to_pdf.html', docx_filename=docx_filename)
+    return render_template('word_to_pdf.html', docx_filename=docx_filename,show_features=True)
 
 @app.route('/download/<filename>')
 def download_file(filename):
@@ -304,7 +304,7 @@ def youtube_tags():
                 # Handle any API or parsing errors
                 error = "Unable to fetch tags for this video. Please check the URL or try again later."
 
-    return render_template('youtube_tags.html', tags=tags, error=error,title=video_title, thumbnail=video_thumbnail)
+    return render_template('youtube_tags.html', tags=tags, error=error,title=video_title, thumbnail=video_thumbnail,show_features=True)
 
 def extract_video_id(url):
     if "v=" in url:
@@ -348,7 +348,7 @@ def protect_pdf():
                 print(e)
                 error = "There is an issue while encrypting the PDF. Please try again later."
 
-    return render_template('protect_pdf.html', encrypted_pdf_path=encrypted_pdf_path, error=error)
+    return render_template('protect_pdf.html', encrypted_pdf_path=encrypted_pdf_path, error=error,show_features=True)
 
 
 # Function to encrypt the PDF with a password
@@ -411,7 +411,7 @@ def unlock_pdf():
             except Exception as e:
                 error = "There is an issue while decrypting the PDF. Please try again later."
 
-    return render_template('unlock_pdf.html',processed_pdf_filename=processed_pdf_filename,error=error)
+    return render_template('unlock_pdf.html',processed_pdf_filename=processed_pdf_filename,error=error,show_features=True)
     
 app.secret_key = 'zentools_zentools@123'
 ACCESS_USERNAME = 'zentools'
@@ -485,7 +485,7 @@ def jsonformatter():
         else:
             error_message = "Please enter JSON data."
 
-    return render_template('jsonformatter.html', formatted_json=formatted_json, error_message=error_message,json_input=json_input)
+    return render_template('jsonformatter.html', formatted_json=formatted_json, error_message=error_message,json_input=json_input,show_features=True)
 
 @app.route('/merge_pdf', methods=['GET', 'POST'])
 def merge_pdf():
@@ -514,9 +514,9 @@ def merge_pdf():
         merger.close()
 
         # Provide the merged PDF URL for downloading
-        return render_template('merge_pdf.html', merged_pdf_filename=merged_pdf_filename)
+        return render_template('merge_pdf.html', merged_pdf_filename=merged_pdf_filename,show_features=True)
 
-    return render_template('merge_pdf.html')
+    return render_template('merge_pdf.html',show_features=True)
     
     
 @app.route('/image_to_base64', methods=['GET', 'POST'])
@@ -530,7 +530,7 @@ def image_to_base64():
             img = image_file.read()
             base64_string = base64.b64encode(img).decode('utf-8')  # Convert to Base64 string
             
-    return render_template('image_to_base64.html', base64_string=base64_string)
+    return render_template('image_to_base64.html', base64_string=base64_string,show_features=True)
 
 # Helper function to check allowed file extensions
 def image_to_base64_allowed_file(filename):
@@ -563,7 +563,7 @@ def base64_to_image():
         except Exception as e:
             error_message = "Please enter a valid Base64 string."
 
-    return render_template('base64_to_image.html',image_path=image_path,filename=filename,error_message=error_message)
+    return render_template('base64_to_image.html',image_path=image_path,filename=filename,error_message=error_message,show_features=True)
     
     
 @app.route('/compress_image', methods=['GET', 'POST'])
@@ -603,7 +603,7 @@ def compress_image():
             except Exception as e:
                 error_message = "There is an issue while compressing the uploaded image."
 
-    return render_template('compress_image.html', compressed_image_path=compressed_image_path, error_message=error_message,compressed_image_filename=compressed_image_filename)
+    return render_template('compress_image.html', compressed_image_path=compressed_image_path, error_message=error_message,compressed_image_filename=compressed_image_filename,show_features=True)
     
     
 @app.route('/invert_image', methods=['GET', 'POST'])
@@ -636,7 +636,7 @@ def invert_image():
             except Exception as e:
                 error_message = "There is an issue while inverting the uploaded image."
 
-    return render_template('invert_image.html',inverted_image_path=inverted_image_path,error_message=error_message,inverted_image_filename=inverted_image_filename)
+    return render_template('invert_image.html',inverted_image_path=inverted_image_path,error_message=error_message,inverted_image_filename=inverted_image_filename,show_features=True)
     
     
 @app.route('/convert_to_black_and_white', methods=['GET', 'POST'])
@@ -669,7 +669,7 @@ def convert_to_black_and_white():
             except Exception as e:
                 error_message = "There is an issue while converting the uploaded image to black and white."
 
-    return render_template('convert_to_black_and_white.html',bw_image_path=bw_image_path,error_message=error_message,bw_image_filename=bw_image_filename)
+    return render_template('convert_to_black_and_white.html',bw_image_path=bw_image_path,error_message=error_message,bw_image_filename=bw_image_filename,show_features=True)
     
     
 @app.route('/youtube_thumbnail_grabber', methods=['GET', 'POST'])
@@ -719,7 +719,7 @@ def youtube_thumbnail_grabber():
             except Exception as e:
                 error = "Unable to fetch thumbnail for this video. Please check the URL or try again later."
 
-    return render_template('youtube_thumbnail_grabber.html', error=error, title=video_title, thumbnail_urls=thumbnail_urls,thumbnail_filenames=thumbnail_filenames)
+    return render_template('youtube_thumbnail_grabber.html', error=error, title=video_title, thumbnail_urls=thumbnail_urls,thumbnail_filenames=thumbnail_filenames,show_features=True)
 
 
 @app.route('/convert_jpg_to_png', methods=['GET', 'POST'])
@@ -754,7 +754,7 @@ def convert_jpg_to_png():
             except Exception as e:
                 error_message = "There is an issue while converting the JPG image to PNG."
 
-    return render_template('convert_jpg_to_png.html', png_image_path=png_image_path, error_message=error_message, png_image_filename=png_image_filename)
+    return render_template('convert_jpg_to_png.html', png_image_path=png_image_path, error_message=error_message, png_image_filename=png_image_filename,show_features=True)
 
 @app.route('/convert_png_to_jpg', methods=['GET', 'POST'])
 def convert_png_to_jpg():
@@ -792,7 +792,7 @@ def convert_png_to_jpg():
             except Exception as e:
                 error_message = "There is an issue while converting the PNG image to JPG."
 
-    return render_template('convert_png_to_jpg.html', jpg_image_path=jpg_image_path, error_message=error_message, jpg_image_filename=jpg_image_filename)
+    return render_template('convert_png_to_jpg.html', jpg_image_path=jpg_image_path, error_message=error_message, jpg_image_filename=jpg_image_filename,show_features=True)
 
 
 @app.route('/convert_webp_to_jpg', methods=['GET', 'POST'])
@@ -831,7 +831,7 @@ def convert_webp_to_jpg():
             except Exception as e:
                 error_message = "There is an issue while converting the WEBP image to JPG."
 
-    return render_template('convert_webp_to_jpg.html', jpg_image_path=jpg_image_path, error_message=error_message, jpg_image_filename=jpg_image_filename)
+    return render_template('convert_webp_to_jpg.html', jpg_image_path=jpg_image_path, error_message=error_message, jpg_image_filename=jpg_image_filename,show_features=True)
     
     
 @app.route('/convert_jpgs_to_pdf', methods=['GET', 'POST'])
@@ -877,7 +877,7 @@ def convert_jpgs_to_pdf():
                 error_message = "There was an issue while converting the JPG images to PDF."
                 print(e)
 
-    return render_template('convert_jpgs_to_pdf.html', pdf_file_path=pdf_file_path, error_message=error_message, pdf_filename=pdf_filename)
+    return render_template('convert_jpgs_to_pdf.html', pdf_file_path=pdf_file_path, error_message=error_message, pdf_filename=pdf_filename,show_features=True)
     
     
 @app.route('/convert_json_to_xml', methods=['GET', 'POST'])
@@ -894,7 +894,7 @@ def convert_json_to_xml():
         except Exception as e:
             error_message = f"There is an issue while converting to XML. Please check your json."
         
-    return render_template('convert_json_to_xml.html', xml_data=xml_data, error_message=error_message,json_data=json_data)
+    return render_template('convert_json_to_xml.html', xml_data=xml_data, error_message=error_message,json_data=json_data,show_features=True)
     
 @app.route('/json_minify', methods=['GET', 'POST'])
 def json_minify():
@@ -910,7 +910,7 @@ def json_minify():
             print(f"Error while minifying JSON: {str(e)}")
             error_message = "There is an issue with your JSON input. Please check and try again."
 
-    return render_template('json_minify.html', json_data=json_data, minified_json=minified_json, error_message=error_message)
+    return render_template('json_minify.html', json_data=json_data, minified_json=minified_json, error_message=error_message,show_features=True)
     
  
 def beautify_css(css_data):
@@ -943,7 +943,7 @@ def css_beautify():
             if not beautified_css:
                 error_message = "There is an issue with your CSS input. Please check and try again."
 
-    return render_template('css_beautify.html', css_data=css_data, beautified_css=beautified_css, error_message=error_message)
+    return render_template('css_beautify.html', css_data=css_data, beautified_css=beautified_css, error_message=error_message,show_features=True)
     
     
 @app.route('/html_beautify', methods=['GET', 'POST'])
@@ -963,12 +963,12 @@ def html_beautify():
         except:
             error_message = "There is an issue with your HTML input. Please check and try again."
             
-    return render_template('html_beautify.html', html_data=html_data, beautified_html=beautified_html, error_message=error_message)
+    return render_template('html_beautify.html', html_data=html_data, beautified_html=beautified_html, error_message=error_message,show_features=True)
     
 
 @app.route('/Character_counter')
 def Character_counter():
-    return render_template('Character_counter.html')
+    return render_template('Character_counter.html',show_features=True)
 
 @app.route('/count_Character', methods=['POST'])
 def count_Character():
@@ -982,7 +982,7 @@ def count_Character():
     
 @app.route('/number_to_words')
 def number_to_words():
-    return render_template('number_to_words.html')
+    return render_template('number_to_words.html',show_features=True)
 
 @app.route('/convert_in_words', methods=['POST'])
 def convert_in_words():
@@ -999,7 +999,7 @@ def convert_in_words():
 
 @app.route('/password-generator')
 def password_generator():
-    return render_template('password_generator.html')
+    return render_template('password_generator.html',show_features=True)
 
 @app.route('/generate-password', methods=['POST'])
 def generate_password():
@@ -1036,12 +1036,63 @@ def generate_password():
     
 @app.route('/lowercase_text')
 def lowercase_text():
-    return render_template('lowercase.html')
+    return render_template('lowercase.html',show_features=True)
     
 @app.route('/uppercase_text')
 def uppercase_text():
-    return render_template('uppercase.html')
+    return render_template('uppercase.html',show_features=True)
+    
+    
+@app.route('/rotate_pdf', methods=['GET', 'POST'])
+def rotate_pdf():
+    processed_pdf_filename = None
+    error = None
+    user_id = session.get('user_id', 'default')  # Replace with actual session management
+    user_upload_dir = os.path.join(BASE_UPLOAD_DIR, user_id)
+    user_download_dir = os.path.join(BASE_DOWNLOAD_DIR, user_id)
 
-   
+    os.makedirs(user_upload_dir, exist_ok=True)
+    os.makedirs(user_download_dir, exist_ok=True)
+
+    if request.method == 'POST':
+        pdf_file = request.files.get('pdf_file')
+        rotation = request.form.get('rotation')
+
+        if not pdf_file:
+            error = "Please upload a PDF file."
+        elif not pdf_file.filename.lower().endswith('.pdf'):
+            error = "Uploaded file is not a valid PDF."
+        elif not rotation:
+            error = "Please select a rotation option."
+        else:
+            pdf_path = os.path.join(user_upload_dir, pdf_file.filename)
+            pdf_file.save(pdf_path)
+
+            processed_pdf_filename = f"rotated_{pdf_file.filename}"
+            processed_pdf_path = os.path.join(user_download_dir, processed_pdf_filename)
+
+            try:
+                from PyPDF2 import PdfReader, PdfWriter
+                reader = PdfReader(pdf_path)
+                writer = PdfWriter()
+
+                for page in reader.pages:
+                    if rotation == '90_right':
+                        page.rotate(90)
+                    elif rotation == '90_left':
+                        page.rotate(-90)
+                    elif rotation == '180':
+                        page.rotate(180)
+                    writer.add_page(page)
+
+                # Save the rotated PDF
+                with open(processed_pdf_path, 'wb') as output_file:
+                    writer.write(output_file)
+            except Exception as e:
+                error = "There was an issue rotating the PDF. Please try again later."
+
+    return render_template('rotate_pdf.html',processed_pdf_filename=processed_pdf_filename,error=error,show_features=True)
+
+
 if __name__ == '__main__':
     app.run(debug=True)

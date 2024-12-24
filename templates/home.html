@@ -75,7 +75,7 @@
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             gap: 20px;
-            padding: 40px 20px;
+            padding: 10px 20px;
             margin: auto;
             width: 90%;
             max-width: 1200px;
@@ -84,7 +84,7 @@
         .tool-card {
             background: white;
             border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.25);
             padding: 20px;
             text-align: center;
             transition: transform 0.3s, box-shadow 0.3s;
@@ -93,7 +93,7 @@
 
         .tool-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 6px 12px rgba(0, 255, 0, 0.75);
         }
 
         .tool-card img {
@@ -113,14 +113,23 @@
         }
 		
 		.tagline {
-    font-size: 1.2em;
-    font-weight: bold;
-    color: white; 
-    margin: 10px 0;
-    text-align: center;
-    letter-spacing: 2px; 
-    text-transform: uppercase;
-}
+			font-size: 1.2em;
+			font-weight: bold;
+			color: white; 
+			margin: 10px 0;
+			text-align: center;
+			letter-spacing: 2px; 
+			text-transform: uppercase;
+		}
+		
+		.section-header {
+			padding: 10px 20px;
+            margin: auto;
+            width: 90%;
+            max-width: 1200px;
+			color:#4CAF50;
+        }
+		
     </style>
 {% endblock %}
 </head>
@@ -133,7 +142,8 @@
 		<p class="tagline">S I M P L I F Y &nbsp; Y O U R &nbsp; T A S K S, &nbsp; E N H A N C E &nbsp; Y O U R &nbsp; P R O D U C T I V I T Y</p>
 		<p>Your one-stop destination for all essential online tools used daily by individuals and businesses alike. Whether you need to simplify your tasks, enhance productivity, or streamline your work processes, this platform offers a variety of tools to meet your needs. Explore a seamless, easy-to-use interface designed to help you get things done quickly and efficiently.</p>
 	</section>
-
+	
+	<h2 class="section-header">PDF Tools</h2>
 	<section class="tools-container">
 		<a href="{{ url_for('convert_jpgs_to_pdf') }}" class="tool-card">
 			<img src="{{ url_for('static', filename='images/JPG_to_PDF.png') }}" alt="JPG to PDF">
@@ -170,7 +180,16 @@
 			<h3>Unlock PDF</h3>
 			<p>Remove PDF password security, giving you the freedom to use your PDFs as you want.</p>
 		</a>
-
+		
+		<a href="{{ url_for('rotate_pdf') }}" class="tool-card">
+			<img src="{{ url_for('static', filename='images/rotate_pdf.png') }}" alt="rotate_pdf">
+			<h3>Rotate PDF</h3>
+			<p>You can use this free PDF rotator to rotate all PDF pages and save the rotated PDF pages permanently.</p>
+		</a>
+	</section>
+	
+	<h2 class="section-header">Image Tools</h2>
+	<section class="tools-container">
 		<a href="{{ url_for('image_to_base64') }}" class="tool-card">
             <img src="{{ url_for('static', filename='images/Image_to_base64.png') }}" alt="Image to BASE64">
             <h3>Image to Base64 Converter</h3>
@@ -218,19 +237,10 @@
             <h3>Convert WEBP to JPG</h3>
             <p>Easily convert WEBP image to JPG online.</p>
         </a>
-		
-		<a href="{{ url_for('youtube_tags') }}" class="tool-card">
-            <img src="{{ url_for('static', filename='images/Youtube_Tag.png') }}" alt="YouTube Video Tag Finder">
-            <h3>YouTube Video Tag Finder</h3>
-            <p>A free tool that can help you extract the tags used by public YouTube videos.</p>
-        </a>
-		
-		<a href="{{ url_for('youtube_thumbnail_grabber') }}" class="tool-card">
-            <img src="{{ url_for('static', filename='images/YouTube-Thumbnail.png') }}" alt="Youtube Thumbnail Grabber">
-            <h3>Youtube Thumbnail Grabber</h3>
-            <p>A free tool that allows you to capture all of the thumbnails for a video on YouTube.</p>
-        </a>
-		
+	</section>
+	
+	<h2 class="section-header">Web Tools</h2>
+	<section class="tools-container">
 		<a href="{{ url_for('jsonformatter') }}" class="tool-card">
             <img src="{{ url_for('static', filename='images/json_formatter.png') }}" alt="JSON Formatter">
             <h3>JSON Formatter</h3>
@@ -260,7 +270,10 @@
             <h3>CSS Beautify</h3>
             <p>CSS Beautify allows you to transform your messy and minified CSS to a clean CSS.</p>
         </a>
-		
+	</section>
+	
+	<h2 class="section-header">Text Tools</h2>
+	<section class="tools-container">	
 		<a href="{{ url_for('password_generator') }}" class="tool-card">
             <img src="{{ url_for('static', filename='images/password_generator.png') }}" alt="password_generator">
             <h3>Password Generator</h3>
@@ -290,7 +303,22 @@
             <h3>Lowercase Text</h3>
             <p>Convert your text to lowercase.</p>
         </a>
+	</section>
+	
+	<h2 class="section-header">Social Media and conversion Tools</h2>
+	<section class="tools-container">	
+		<a href="{{ url_for('youtube_tags') }}" class="tool-card">
+            <img src="{{ url_for('static', filename='images/Youtube_Tag.png') }}" alt="YouTube Video Tag Finder">
+            <h3>YouTube Video Tag Finder</h3>
+            <p>A free tool that can help you extract the tags used by public YouTube videos.</p>
+        </a>
 		
+		<a href="{{ url_for('youtube_thumbnail_grabber') }}" class="tool-card">
+            <img src="{{ url_for('static', filename='images/YouTube-Thumbnail.png') }}" alt="Youtube Thumbnail Grabber">
+            <h3>Youtube Thumbnail Grabber</h3>
+            <p>A free tool that allows you to capture all of the thumbnails for a video on YouTube.</p>
+        </a>
+
 		<a href="{{ url_for('currency_conversion') }}" class="tool-card">
             <img src="{{ url_for('static', filename='images/currency_converter.png') }}" alt="Currency Conversion">
             <h3>Currency Conversion</h3>
@@ -303,5 +331,6 @@
             <p>Basic unit conversion for Length,Weight and Temperature.</p>
         </a>
 	</section>
+	
 	<h2><marquee>More tools will be added, coming soon.</marquee></h2>
 {% endblock %}

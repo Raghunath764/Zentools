@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+
+{% block title %}Rotate PDF{% endblock %}
+
+{% block styles %}
+    <style>
+        button, .btn {
+            background-color: #4CAF50; /* Green */
+            color: white;
+            padding: 10px 15px;
+            margin: 10px 5px;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+        }  
+
+        button:hover, .btn:hover {
+            background-color: #45a049;
+        }
+
+        /* Animation for the heading */
+        @keyframes fadeIn {
+            from {
+                opacity: 0; /* Start invisible */
+                transform: translateY(-20px); /* Move up slightly */
+            }
+            to {
+                opacity: 1; /* Fully visible */
+                transform: translateY(0); /* Back to original position */
+            }
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px; /* Reduced margin */
+            font-size: 2.5em;
+            animation: fadeIn 1s ease-in-out; /* Apply animation */
+			margin-top: 100px; /* Add margin to offset the fixed header */
+        }
+        
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+		.result {
+            background-color: #e7ffe7;
+        }
+        .error {
+            color: red;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <h1>Rotate PDF Online</h1>
+	<p style="margin: 10px 5px;">How do you change orientation on a PDF? You can use this free PDF rotator to rotate all PDF pages and save the rotated PDF pages permanently. With this PDF tool you can rotate the PDF pages and change the orientation (degree) of the PDF. Just select the PDF file and click the upload button.</p>
+    <form action="/rotate_pdf" method="post" enctype="multipart/form-data" style="margin: 10px 5px;">
+        <label for="pdf_file">Select PDF file (max 50MB):</label>
+        <input type="file" id="pdf_file" name="pdf_file" accept=".pdf" required><br><br>
+        <label for="rotation">Select angle to Rotate:</label>
+        <select id="rotation" name="rotation" required>
+            <option value="90_right">90 Degrees Clockwise (to Right)</option>
+            <option value="90_left">90 Degrees Counter Clockwise (to Left)</option>
+            <option value="180">180 Degrees (Flip Upside Down)</option>
+        </select><br>
+        <button type="submit">Rotate PDF</button><br>
+    </form>
+
+    {% if processed_pdf_filename %}
+    <div class="result" style="margin: 10px 5px;">
+        <p>PDF rotated successfully! <a href="{{ url_for('download_file', filename=processed_pdf_filename) }}" download>Download Rotated PDF</a></p>
+    </div>
+    {% endif %}
+
+    {% if error %}
+    <div class="error" style="margin: 10px 5px;">
+        <p>{{ error }}</p>
+    </div>
+	{% endif %}
+{% endblock %}

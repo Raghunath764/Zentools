@@ -39,6 +39,7 @@
 						<a href="{{ url_for('merge_pdf') }}">Merge PDF</a>
 						<a href="{{ url_for('protect_pdf') }}">Protect PDF</a>
 						<a href="{{ url_for('unlock_pdf') }}">Unlock PDF</a>
+						<a href="{{ url_for('rotate_pdf') }}">Rotate PDF</a>
                     </div>
                 </div>
 				<div class="dropdown">
@@ -98,6 +99,19 @@
 	<div class="content">
         {% block content %}{% endblock %}
     </div>
+	
+	{% if show_features %}
+		<div>
+			<h3 class="h3_Features">Main Service Features</h3>
+				<ul class="list-group">
+					<li class="list-group-item"><i class="fa fa-check text-success" aria-hidden="true" style="color: green;"></i> Works online from any popular web browser</li>
+					<li class="list-group-item"><i class="fa fa-check text-success" aria-hidden="true" style="color: green;"></i> Files are uploaded via HTTPS secure connection</li>
+					<li class="list-group-item"><i class="fa fa-check text-success" aria-hidden="true" style="color: green;"></i> Uploaded files are automatically deleted after a few hours</li>
+					<li class="list-group-item"><i class="fa fa-check text-success" aria-hidden="true" style="color: green;"></i> Convert as many files as you need, there are no limits</li>
+					<li class="list-group-item"><i class="fa fa-check text-success" aria-hidden="true" style="color: green;"></i> This service is 100% free to use for anyone</li>
+				</ul>
+		</div>
+	{% endif %}
 	
 	<footer>
 		<p>&copy; 2024 ZenTools | Simplify Your Tasks, Enhance Your Productivity | <a href="{{ url_for('about_us') }}">About Us</a> | <a href="{{ url_for('contact_us') }}">Contact Us</a></p>
