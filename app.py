@@ -28,6 +28,7 @@ import inflect
 import string
 import random
 import secrets
+import cssmin
 
 app = Flask(__name__)
 
@@ -1092,6 +1093,23 @@ def rotate_pdf():
                 error = "There was an issue rotating the PDF. Please try again later."
 
     return render_template('rotate_pdf.html',processed_pdf_filename=processed_pdf_filename,error=error,show_features=True)
+    
+    
+@app.route('/css_minify', methods=['GET', 'POST'])
+def css_minify():
+    css_data = ''
+    minified_css = ''
+    error_message = ''
+
+    if request.method == 'POST':
+        css_data = request.form.get('css_data')
+        try:
+            minified_css = cssmin.cssmin(css_data)
+        except Exception as e:
+            print(f"Error while minifying CSS: {str(e)}")
+            error_message = "There is an issue with your CSS input. Please check and try again."
+
+    return render_template('css_minify.html', css_data=css_data, minified_css=minified_css, error_message=error_message, show_features=True)
 
 
 if __name__ == '__main__':

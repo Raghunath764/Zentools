@@ -22,7 +22,11 @@
 <body>
 	<header>
 		<nav>
-			<a href="{{ url_for('home') }}" class="brand-name"><b>ZenTools</b></a>
+			 <!-- Logo and Brand Name -->
+			<a href="{{ url_for('home') }}" class="brand-name">
+				<img src="{{ url_for('static', filename='images/logo.png') }}" alt="ZenTools Logo" style="height:40px; vertical-align:middle;">
+				<b>ZenTools</b>
+			</a>
 			<div class="menu-toggle" id="menu-toggle">
 				<span class="bar"></span>
 				<span class="bar"></span>
@@ -63,6 +67,7 @@
 						<a href="{{ url_for('convert_json_to_xml') }}">JSON to XML</a>
 						<a href="{{ url_for('html_beautify') }}">HTML Beautify</a>
 						<a href="{{ url_for('css_beautify') }}">CSS Beautify</a>
+						<a href="{{ url_for('css_minify') }}">CSS Minify</a>
                     </div>
                 </div>
 				<div class="dropdown">

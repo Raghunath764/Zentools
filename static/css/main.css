@@ -13,7 +13,7 @@ body {
 header {
 	background: #4CAF50;
 	color: white;
-	padding: 20px 0;
+	padding: 15px 0;
 	text-align: center;
 	position: fixed;
 	width: 100%;
@@ -31,7 +31,6 @@ nav {
 	display: flex;
 	justify-content: center; /* Center the navigation links */
 	align-items: center;
-	margin-top: 10px;
 }
 
 nav a {
@@ -119,9 +118,20 @@ footer a:hover {
 }
 
 .brand-name {
-    font-size: 1.5em; /* Adjust size as needed */
-    font-weight: bold; /* Optional, if you want it to stay bold */
+    display: flex;
+    align-items: center;
+    text-decoration: none;
 	margin-left:100px;
+}
+
+ .brand-name b {
+	font-size: 1.5em; /* Adjust size as needed */
+    font-weight: bold;
+	
+}
+
+.brand-name:hover {
+    color: #FFD700;
 }
 
 /* Dropdown Menu Styles */

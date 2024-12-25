@@ -18,13 +18,12 @@
 
         /* Hero Section */
         .hero {
-				margin-top: 100px; /* Adjusts for fixed header */
 				text-align: center;
-				padding: 50px 20px;
+				padding: 40px 20px;
 				background: linear-gradient(90deg, #4CAF50 0%, #8BC34A 100%);
 				color: white;
 				border-radius: 8px;
-				margin: 20px auto;
+				margin: 0px auto;
 				width: 100%;
 				max-width: 1200px;
 				box-sizing: border-box; /* Ensures padding doesn't overflow */
@@ -32,7 +31,7 @@
 
 			.hero h2 {
 				font-size: 2.5em;
-				margin-bottom: 20px;
+				margin-bottom: 10px;
 				animation: fadeIn 1s ease-in-out;
 			}
 
@@ -71,47 +70,87 @@
 			}
 
         /* Tools Section */
-        .tools-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 20px;
-            padding: 10px 20px;
+		.tools-container {
+			display: grid;
+			grid-template-columns: repeat(3, 1fr); /* 3 cards per row */
+			gap: 20px; /* spacing between cards */
+			justify-content: space-around; /* ensures space between cards */
+			padding: 10px 20px;
             margin: auto;
             width: 90%;
             max-width: 1200px;
-        }
+		}
 
-        .tool-card {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.25);
-            padding: 20px;
-            text-align: center;
-            transition: transform 0.3s, box-shadow 0.3s;
-            text-decoration: none;
-        }
+		.tool-card {
+			background-color: #fff;
+			border-radius: 8px;
+			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+			padding: 20px;
+			text-decoration: none;
+			color: #333;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			transition: transform 0.3s ease-in-out;
+		}
 
-        .tool-card:hover {
+		.tool-card:hover {
+			transform: translateY(-5px);
+			box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+		}
+
+		/* Flexbox to align the image and h3 in one line */
+		.tool-card > div {
+			display: flex;
+			align-items: center; /* vertically centers the image and h3 */
+			justify-content: flex-start; /* ensures they are aligned to the left */
+		}
+
+		.tool-card img {
+			max-width: 50px;  /* Set the image width */
+			height: auto;
+			margin-right: 10px;  /* Space between image and text */
+		}
+
+		.tool-card h3 {
+			font-size: 18px;
+			font-weight: bold;
+			margin: 0; /* removes the default margin */
+			color: #4CAF50;
+		}
+
+		.tool-card p {
+			font-size: 14px;
+			line-height: 1.5;
+			color: #555;
+			text-align: center;
+			margin-top: 10px;
+		}
+
+		.tool-card:focus, .tool-card:hover {
+			color: #007bff;
+			text-decoration: none;
+		}
+		
+		.tool-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 6px 12px rgba(0, 255, 0, 0.75);
         }
 
-        .tool-card img {
-            max-width: 60px;
-            margin-bottom: 15px;
-        }
+		/* Responsive Design: When the screen width is smaller than 1200px, show 2 cards per row */
+		@media (max-width: 1200px) {
+			.tools-container {
+				grid-template-columns: repeat(2, 1fr); /* 2 cards per row */
+			}
+		}
 
-        .tool-card h3 {
-            font-size: 1.2em;
-            margin: 10px 0;
-            color: #4CAF50;
-        }
+		/* Responsive Design: When the screen width is smaller than 768px, show 1 card per row */
+		@media (max-width: 768px) {
+			.tools-container {
+				grid-template-columns: 1fr; /* 1 card per row */
+			}
+		}
 
-        .tool-card p {
-            font-size: 0.9em;
-            color: #666;
-        }
-		
 		.tagline {
 			font-size: 1.2em;
 			font-weight: bold;
@@ -146,44 +185,58 @@
 	<h2 class="section-header">PDF Tools</h2>
 	<section class="tools-container">
 		<a href="{{ url_for('convert_jpgs_to_pdf') }}" class="tool-card">
-			<img src="{{ url_for('static', filename='images/JPG_to_PDF.png') }}" alt="JPG to PDF">
-			<h3>JPG to PDF</h3>
+			 <div>
+				<img src="{{ url_for('static', filename='images/JPG_to_PDF.png') }}" alt="JPG to PDF">
+				<h3>JPG to PDF</h3>
+			</div>
 			<p>Convert JPG to PDF for free online. Our JPG to PDF Converter transforms JPG image file into a custom PDF file in seconds—no file size limits, no watermarks.</p>
 		</a>
 		
 		<a href="{{ url_for('pdf_to_word') }}" class="tool-card">
-			<img src="{{ url_for('static', filename='images/pdf_to_docs.png') }}" alt="PDF to Word<">
-			<h3>PDF to Word</h3>
+			<div>
+				<img src="{{ url_for('static', filename='images/pdf_to_docs.png') }}" alt="PDF to Word<">
+				<h3>PDF to Word</h3>
+			</div>
 			<p>Easily convert your PDF files into easy to edit DOC and DOCX documents. The converted WORD document is almost 100% accurate.</p>
 		</a>
 
 		<a href="{{ url_for('word_to_pdf') }}" class="tool-card">
-			<img src="{{ url_for('static', filename='images/Word-to-PDF.png') }}" alt="Word to PDF">
-			<h3>Word to PDF</h3>
+			<div>
+				<img src="{{ url_for('static', filename='images/Word-to-PDF.png') }}" alt="Word to PDF">
+				<h3>Word to PDF</h3>
+			</div>
 			<p>Make DOC and DOCX files easy to read by converting them to PDF.</p>
 		</a>
 		
 		<a href="{{ url_for('merge_pdf') }}" class="tool-card">
-			<img src="{{ url_for('static', filename='images/merged_pdf.png') }}" alt="Merge PDF">
-			<h3>Merge PDF</h3>
+			<div>
+				<img src="{{ url_for('static', filename='images/merged_pdf.png') }}" alt="Merge PDF">
+				<h3>Merge PDF</h3>
+			</div>
 			<p>Easily merge multiple pdfs into one pdf in the order you want.</p>
 		</a>
 
 		<a href="{{ url_for('protect_pdf') }}" class="tool-card">
-			<img src="{{ url_for('static', filename='images/protect_pdf.png') }}" alt="Protect PDF">
-			<h3>Protect PDF</h3>
+			<div>
+				<img src="{{ url_for('static', filename='images/protect_pdf.png') }}" alt="Protect PDF">
+				<h3>Protect PDF</h3>
+			</div>
 			<p>Protect PDF files with a password. Encrypt PDF documents to prevent unauthorized access.</p>
 		</a>
 		
 		<a href="{{ url_for('unlock_pdf') }}" class="tool-card">
-			<img src="{{ url_for('static', filename='images/unlock_pdf.png') }}" alt="Unlock PDF">
-			<h3>Unlock PDF</h3>
+			<div>
+				<img src="{{ url_for('static', filename='images/unlock_pdf.png') }}" alt="Unlock PDF">
+				<h3>Unlock PDF</h3>
+			</div>
 			<p>Remove PDF password security, giving you the freedom to use your PDFs as you want.</p>
 		</a>
 		
 		<a href="{{ url_for('rotate_pdf') }}" class="tool-card">
-			<img src="{{ url_for('static', filename='images/rotate_pdf.png') }}" alt="rotate_pdf">
-			<h3>Rotate PDF</h3>
+			<div>
+				<img src="{{ url_for('static', filename='images/rotate_pdf.png') }}" alt="rotate_pdf">
+				<h3>Rotate PDF</h3>
+			</div>
 			<p>You can use this free PDF rotator to rotate all PDF pages and save the rotated PDF pages permanently.</p>
 		</a>
 	</section>
@@ -191,50 +244,66 @@
 	<h2 class="section-header">Image Tools</h2>
 	<section class="tools-container">
 		<a href="{{ url_for('image_to_base64') }}" class="tool-card">
-            <img src="{{ url_for('static', filename='images/Image_to_base64.png') }}" alt="Image to BASE64">
-            <h3>Image to Base64 Converter</h3>
+			<div>
+				<img src="{{ url_for('static', filename='images/Image_to_base64.png') }}" alt="Image to BASE64">
+				<h3>Image to Base64 Converter</h3>
+			</div>
             <p>Convert Image to Base64 online using a free tool which allows you to decode Image as Base64</p>
         </a>
 		
 		<a href="{{ url_for('base64_to_image') }}" class="tool-card">
-            <img src="{{ url_for('static', filename='images/Image_to_base64.png') }}" alt="BASE64 to Image">
-            <h3>Base64 to Image Converter</h3>
+			<div>
+				<img src="{{ url_for('static', filename='images/Image_to_base64.png') }}" alt="BASE64 to Image">
+				<h3>Base64 to Image Converter</h3>
+			</div>
             <p>Convert Base64 to image online using a free tool which allows you to decode Base64 as image.</p>
         </a>
 		
 		<a href="{{ url_for('compress_image') }}" class="tool-card">
-            <img src="{{ url_for('static', filename='images/compress_image.png') }}" alt="Compress Image">
-            <h3>Compress Image</h3>
+			<div>
+				<img src="{{ url_for('static', filename='images/compress_image.png') }}" alt="Compress Image">
+				<h3>Compress Image</h3>
+			</div>
             <p>Compress Image is an online tool to easily reduce the size of an image.</p>
         </a>
 		
 		<a href="{{ url_for('invert_image') }}" class="tool-card">
-            <img src="{{ url_for('static', filename='images/invert-image.png') }}" alt="Invert Image Colors">
-            <h3>Invert Image Colors</h3>
+			<div>
+				<img src="{{ url_for('static', filename='images/invert-image.png') }}" alt="Invert Image Colors">
+				<h3>Invert Image Colors</h3>
+			</div>
             <p>Easily invert the colors of an image.</p>
         </a>
 		
 		<a href="{{ url_for('convert_to_black_and_white') }}" class="tool-card">
-            <img src="{{ url_for('static', filename='images/black_and_white.png') }}" alt="Black and White">
-            <h3>Image Black and White</h3>
+			<div>
+				<img src="{{ url_for('static', filename='images/black_and_white.png') }}" alt="Black and White">
+				<h3>Image Black and White</h3>
+			</div>
             <p>Easily convert an image to black and white online.</p>
         </a>
 
 		<a href="{{ url_for('convert_jpg_to_png') }}" class="tool-card">
-            <img src="{{ url_for('static', filename='images/jpg_to_png.png') }}" alt="jpg_to_png">
-            <h3>Convert JPG to PNG</h3>
+			<div>
+				<img src="{{ url_for('static', filename='images/jpg_to_png.png') }}" alt="jpg_to_png">
+				<h3>Convert JPG to PNG</h3>
+			</div>
             <p>Easily convert JPG image to PNG online.</p>
         </a>
 
 		<a href="{{ url_for('convert_png_to_jpg') }}" class="tool-card">
-            <img src="{{ url_for('static', filename='images/jpg_to_png.png') }}" alt="png_to_jpg">
-            <h3>Convert PNG to JPG</h3>
+			<div>
+				<img src="{{ url_for('static', filename='images/jpg_to_png.png') }}" alt="png_to_jpg">
+				<h3>Convert PNG to JPG</h3>
+			</div>
             <p>Easily convert PNG image to JPG online.</p>
         </a>
 
 		<a href="{{ url_for('convert_webp_to_jpg') }}" class="tool-card">
-            <img src="{{ url_for('static', filename='images/webp-to-jpg.png') }}" alt="WEBP to JPG">
-            <h3>Convert WEBP to JPG</h3>
+			<div>
+				<img src="{{ url_for('static', filename='images/webp-to-jpg.png') }}" alt="WEBP to JPG">
+				<h3>Convert WEBP to JPG</h3>
+			</div>
             <p>Easily convert WEBP image to JPG online.</p>
         </a>
 	</section>
@@ -242,65 +311,93 @@
 	<h2 class="section-header">Web Tools</h2>
 	<section class="tools-container">
 		<a href="{{ url_for('jsonformatter') }}" class="tool-card">
-            <img src="{{ url_for('static', filename='images/json_formatter.png') }}" alt="JSON Formatter">
-            <h3>JSON Formatter</h3>
+			<div>
+				<img src="{{ url_for('static', filename='images/json_formatter.png') }}" alt="JSON Formatter">
+				<h3>JSON Formatter</h3>
+			</div>
             <p>A free tool for formatting and beautifying the JSON data so that it is easy to read and debug by human beings.</p>
         </a>
 		
 		<a href="{{ url_for('json_minify') }}" class="tool-card">
-            <img src="{{ url_for('static', filename='images/json_minify.png') }}" alt="JSON Minify">
-            <h3>JSON Minify</h3>
+			<div>
+				<img src="{{ url_for('static', filename='images/json_minify.png') }}" alt="JSON Minify">
+				<h3>JSON Minify</h3>
+			</div>
             <p>Use JSON Minify tool in order to minify JSON, compact JSON and compress JSON.It is very simple and easy way to minify JSON.</p>
         </a>
 		
 		<a href="{{ url_for('convert_json_to_xml') }}" class="tool-card">
-            <img src="{{ url_for('static', filename='images/xml.png') }}" alt="JSON to XML">
-            <h3>JSON to XML</h3>
+			<div>
+				<img src="{{ url_for('static', filename='images/xml.png') }}" alt="JSON to XML">
+				<h3>JSON to XML</h3>
+			</div>
             <p>Use this tool in order to easily convert from JSON to XML format.</p>
         </a>
 		
 		<a href="{{ url_for('html_beautify') }}" class="tool-card">
-            <img src="{{ url_for('static', filename='images/html_Beautify.png') }}" alt="HTML Beautify">
-            <h3>HTML Beautify</h3>
+			<div>
+				<img src="{{ url_for('static', filename='images/html_Beautify.png') }}" alt="HTML Beautify">
+				<h3>HTML Beautify</h3>
+			</div>
             <p>HTML Beautify allows you to transform your messy HTML to a clean HTML.</p>
         </a>
 		
 		<a href="{{ url_for('css_beautify') }}" class="tool-card">
-            <img src="{{ url_for('static', filename='images/CSS_Beautify.png') }}" alt="CSS Beautify">
-            <h3>CSS Beautify</h3>
+			<div>
+				<img src="{{ url_for('static', filename='images/CSS_Beautify.png') }}" alt="CSS Beautify">
+				<h3>CSS Beautify</h3>
+			</div>
             <p>CSS Beautify allows you to transform your messy and minified CSS to a clean CSS.</p>
+        </a>
+		
+		<a href="{{ url_for('css_minify') }}" class="tool-card">
+			<div>
+				<img src="{{ url_for('static', filename='images/CSS_Beautify.png') }}" alt="CSS Minify<">
+				<h3>CSS Minify</h3>
+			</div>
+            <p>CSS Minify is a tool that allow you to minify CSS code. It's the simplest and quickest method for optimizing css code from large files.</p>
         </a>
 	</section>
 	
 	<h2 class="section-header">Text Tools</h2>
 	<section class="tools-container">	
 		<a href="{{ url_for('password_generator') }}" class="tool-card">
-            <img src="{{ url_for('static', filename='images/password_generator.png') }}" alt="password_generator">
-            <h3>Password Generator</h3>
+			<div>
+				<img src="{{ url_for('static', filename='images/password_generator.png') }}" alt="password_generator">
+				<h3>Password Generator</h3>
+			</div>
             <p>Easily generate a secure and random password.</p>
         </a>
 		
 		<a href="{{ url_for('Character_counter') }}" class="tool-card">
-            <img src="{{ url_for('static', filename='images/Character_counter.png') }}" alt="Character_counter">
-            <h3>Character counter</h3>
+			<div>
+				<img src="{{ url_for('static', filename='images/Character_counter.png') }}" alt="Character_counter">
+				<h3>Character counter</h3>
+			</div>
             <p>A free tool for counting characters and words in real time.</p>
         </a>
 		
 		<a href="{{ url_for('number_to_words') }}" class="tool-card">
-            <img src="{{ url_for('static', filename='images/number_to_words.png') }}" alt="number_to_words">
-            <h3>Number to Words Converter</h3>
+			<div>
+				<img src="{{ url_for('static', filename='images/number_to_words.png') }}" alt="number_to_words">
+				<h3>Number to Words Converter</h3>
+			</div>
             <p>Easily convert a number into readable words, which you can then copy.</p>
         </a>
 		
 		<a href="{{ url_for('uppercase_text') }}" class="tool-card">
-            <img src="{{ url_for('static', filename='images/uppercase.png') }}" alt="uppercase_text">
-            <h3>Uppercase Text</h3>
+			<div>
+				<img src="{{ url_for('static', filename='images/uppercase.png') }}" alt="uppercase_text">
+				<h3>Uppercase Text</h3>
+			</div>
             <p>Convert your text to uppercase.</p>
         </a>
 		
 		<a href="{{ url_for('lowercase_text') }}" class="tool-card">
-            <img src="{{ url_for('static', filename='images/lowercase.png') }}" alt="lowercase_text">
-            <h3>Lowercase Text</h3>
+			<div>
+				<img src="{{ url_for('static', filename='images/lowercase.png') }}" alt="lowercase_text">
+				<h3>Lowercase Text</h3>
+			</div>
             <p>Convert your text to lowercase.</p>
         </a>
 	</section>
@@ -308,29 +405,36 @@
 	<h2 class="section-header">Social Media and conversion Tools</h2>
 	<section class="tools-container">	
 		<a href="{{ url_for('youtube_tags') }}" class="tool-card">
-            <img src="{{ url_for('static', filename='images/Youtube_Tag.png') }}" alt="YouTube Video Tag Finder">
-            <h3>YouTube Video Tag Finder</h3>
+			<div>
+				<img src="{{ url_for('static', filename='images/Youtube_Tag.png') }}" alt="YouTube Video Tag Finder">
+				<h3>YouTube Video Tag Finder</h3>
+			</div>
             <p>A free tool that can help you extract the tags used by public YouTube videos.</p>
         </a>
 		
 		<a href="{{ url_for('youtube_thumbnail_grabber') }}" class="tool-card">
-            <img src="{{ url_for('static', filename='images/YouTube-Thumbnail.png') }}" alt="Youtube Thumbnail Grabber">
-            <h3>Youtube Thumbnail Grabber</h3>
+			<div>
+				<img src="{{ url_for('static', filename='images/YouTube-Thumbnail.png') }}" alt="Youtube Thumbnail Grabber">
+				<h3>Youtube Thumbnail Grabber</h3>
+			</div>
             <p>A free tool that allows you to capture all of the thumbnails for a video on YouTube.</p>
         </a>
 
 		<a href="{{ url_for('currency_conversion') }}" class="tool-card">
-            <img src="{{ url_for('static', filename='images/currency_converter.png') }}" alt="Currency Conversion">
-            <h3>Currency Conversion</h3>
+			<div>
+				<img src="{{ url_for('static', filename='images/currency_converter.png') }}" alt="Currency Conversion">
+				<h3>Currency Conversion</h3>
+			</div>
             <p>Basic Currency conversion for all currency.</p>
         </a>
 
 		<a href="{{ url_for('unit_conversion') }}" class="tool-card">
-            <img src="{{ url_for('static', filename='images/unit_conversion.png') }}" alt="Unit Conversion">
-            <h3>Unit Conversion</h3>
+			<div>
+				<img src="{{ url_for('static', filename='images/unit_conversion.png') }}" alt="Unit Conversion">
+				<h3>Unit Conversion</h3>
+			</div>
             <p>Basic unit conversion for Length,Weight and Temperature.</p>
         </a>
 	</section>
-	
 	<h2><marquee>More tools will be added, coming soon.</marquee></h2>
 {% endblock %}

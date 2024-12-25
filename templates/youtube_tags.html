@@ -56,13 +56,26 @@
             background-color: #45a049;
         }
 		
-		h1 {
-			text-align: center;
-			color: #2c3e50;
-			margin-bottom: 30px;
-			font-size: 2.5em;
+		/* Animation for the heading */
+        @keyframes fadeIn {
+            from {
+                opacity: 0; /* Start invisible */
+                transform: translateY(-20px); /* Move up slightly */
+            }
+            to {
+                opacity: 1; /* Fully visible */
+                transform: translateY(0); /* Back to original position */
+            }
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px; /* Reduced margin */
+            font-size: 2.5em;
+            animation: fadeIn 1s ease-in-out; /* Apply animation */
 			margin-top: 100px; /* Add margin to offset the fixed header */
-		}
+        }
 	</style>
 {% endblock %}
 
