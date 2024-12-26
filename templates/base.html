@@ -22,7 +22,6 @@
 <body>
 	<header>
 		<nav>
-			 <!-- Logo and Brand Name -->
 			<a href="{{ url_for('home') }}" class="brand-name">
 				<img src="{{ url_for('static', filename='images/logo.png') }}" alt="ZenTools Logo" style="height:40px; vertical-align:middle;">
 				<b>ZenTools</b>
@@ -33,7 +32,6 @@
 				<span class="bar"></span>
 			</div>
 			<div class="menu" id="menu">
-				<a href="{{ url_for('home') }}"><b>Home</b></a>
 				<div class="dropdown">
                     <a>Pdf<i class="fa fa-chevron-down" style="font-size:16px;color:red;margin-left:2px"></i></a>
                     <div class="dropdown-content">
@@ -44,6 +42,9 @@
 						<a href="{{ url_for('protect_pdf') }}">Protect PDF</a>
 						<a href="{{ url_for('unlock_pdf') }}">Unlock PDF</a>
 						<a href="{{ url_for('rotate_pdf') }}">Rotate PDF</a>
+						<a href="{{ url_for('split_pdf') }}">Split PDF</a>
+						<a href="{{ url_for('read_pdf_metadata') }}">Read PDF Metadata</a>
+						<a href="{{ url_for('edit_pdf_metadata') }}">Edit PDF Metadata</a>
                     </div>
                 </div>
 				<div class="dropdown">
@@ -68,6 +69,7 @@
 						<a href="{{ url_for('html_beautify') }}">HTML Beautify</a>
 						<a href="{{ url_for('css_beautify') }}">CSS Beautify</a>
 						<a href="{{ url_for('css_minify') }}">CSS Minify</a>
+						<a href="{{ url_for('generate_qr') }}">QR Code Generator</a>
                     </div>
                 </div>
 				<div class="dropdown">

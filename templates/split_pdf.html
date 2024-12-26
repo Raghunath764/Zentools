@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+
+{% block title %}Split PDF{% endblock %}
+
+{% block styles %}
+    <style>
+        button, .btn {
+            background-color: #4CAF50; /* Green */
+            color: white;
+            padding: 10px 15px;
+            margin: 10px 5px;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+        }  
+
+        button:hover, .btn:hover {
+            background-color: #45a049;
+        }
+
+        /* Animation for the heading */
+        @keyframes fadeIn {
+            from {
+                opacity: 0; /* Start invisible */
+                transform: translateY(-20px); /* Move up slightly */
+            }
+            to {
+                opacity: 1; /* Fully visible */
+                transform: translateY(0); /* Back to original position */
+            }
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px; /* Reduced margin */
+            font-size: 2.5em;
+            animation: fadeIn 1s ease-in-out; /* Apply animation */
+			margin-top: 75px; /* Add margin to offset the fixed header */
+        }
+        
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+		.result {
+            background-color: #e7ffe7;
+        }
+        .error {
+            color: red;
+        }
+		
+		.range-section { display: none; margin-top: 10px; }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <h1>Split PDF</h1>
+	<p>Separate one page or a whole set for easy conversion into independent PDF files.</p>
+    <form method="POST" enctype="multipart/form-data">
+        <label for="pdf_file">Select PDF file (max 50MB):</label>
+        <input type="file" name="pdf_file" id="pdf_file" accept=".pdf"><br><br>
+
+        <label>Range Type:</label><br>
+        <input type="radio" name="range_type" value="custom_range" onclick="toggleRangeSelection()" checked> Custom Range<br>
+        <input type="radio" name="range_type" value="fixed_range" onclick="toggleRangeSelection()"> Fixed Range<br>
+
+        <div id="custom_range_section" class="range-section" style="display: block;">
+            <label>From Page:</label>
+            <input type="number" name="from_page" min="1"><br>
+            <label>To Page:</label>
+            <input type="number" name="to_page" min="1"><br>
+        </div>
+
+        <div id="fixed_range_section" class="range-section">
+            <label>Page Number:</label>
+            <input type="number" name="single_page" min="1"><br>
+        </div>
+
+        <button type="submit">Split PDF</button>
+    </form>
+	
+	{% if error %}
+        <p style="color: red;">{{ error }}</p>
+	{% elif processed_pdf_filename %}
+		{% if processed_pdf_filename %}
+        <p>Download your split PDF: 
+            <a href="{{ url_for('download_file', filename=processed_pdf_filename) }}" target="_blank">{{ processed_pdf_filename }}</a>
+        </p>
+		{% endif %}
+	
+    {% endif %}
+	
+	<script>
+        function toggleRangeSelection() {
+            const rangeType = document.querySelector('input[name="range_type"]:checked').value;
+            document.getElementById('custom_range_section').style.display = (rangeType === 'custom_range') ? 'block' : 'none';
+            document.getElementById('fixed_range_section').style.display = (rangeType === 'fixed_range') ? 'block' : 'none';
+        }
+
+        window.onload = function () {
+            toggleRangeSelection();
+        };
+    </script>
+	
+{% endblock %}

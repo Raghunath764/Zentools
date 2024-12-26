@@ -239,6 +239,30 @@
 			</div>
 			<p>You can use this free PDF rotator to rotate all PDF pages and save the rotated PDF pages permanently.</p>
 		</a>
+		
+		<a href="{{ url_for('split_pdf') }}" class="tool-card">
+			<div>
+				<img src="{{ url_for('static', filename='images/split_pdf.png') }}" alt="split_pdf">
+				<h3>Split PDF</h3>
+			</div>
+			<p>Separate one page or a whole set for easy conversion into independent PDF files.</p>
+		</a>
+		
+		<a href="{{ url_for('read_pdf_metadata') }}" class="tool-card">
+			<div>
+				<img src="{{ url_for('static', filename='images/pdf_metadata.png') }}" alt="Read PDF Metadata">
+				<h3>Read PDF Metadata</h3>
+			</div>
+			<p>Use this PDF tool to read PDF metadata, view PDF author, title, subject, keywords, creator, producer, creation date, and other PDF properties.</p>
+		</a>
+		
+		<a href="{{ url_for('edit_pdf_metadata') }}" class="tool-card">
+			<div>
+				<img src="{{ url_for('static', filename='images/pdf_metadata.png') }}" alt="split_pdf">
+				<h3>Edit PDF Metadata</h3>
+			</div>
+			<p>Use this PDF tool to edit PDF metadata, edit PDF author, title, subject, keywords, creator, producer, creation date, and other PDF properties.</p>
+		</a>
 	</section>
 	
 	<h2 class="section-header">Image Tools</h2>
@@ -356,6 +380,14 @@
 				<h3>CSS Minify</h3>
 			</div>
             <p>CSS Minify is a tool that allow you to minify CSS code. It's the simplest and quickest method for optimizing css code from large files.</p>
+        </a>
+		
+		<a href="{{ url_for('generate_qr') }}" class="tool-card">
+			<div>
+				<img src="{{ url_for('static', filename='images/qr_code.png') }}" alt="QR Code Generato<">
+				<h3>QR Code Generator</h3>
+			</div>
+            <p>Easily create customizable QR Codes and save them as images.</p>
         </a>
 	</section>
 	

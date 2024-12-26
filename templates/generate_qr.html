@@ -1,15 +1,14 @@
 {% extends 'base.html' %}
 
-{% block title %}Lowercase Text{% endblock %}
+{% block title %}CSS Minify{% endblock %}
 
 {% block styles %}
-	<style>		
-		button, .btn {
+	<style>	
+        button, .btn {
         background-color: #4CAF50; /* Green */
         color: white;
         padding: 10px 15px;
         margin: 10px 5px;
-		margin-left:20%;
         border: none;
         cursor: pointer;
         text-decoration: none;
@@ -39,13 +38,6 @@
             animation: fadeIn 1s ease-in-out; /* Apply animation */
 			margin-top: 75px;
         }
-		.container {
-            max-width: 800px;
-            background-color: white;
-            padding: 20px;
-			border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
        textarea {
 			width: 50%; /* Set width to 50% */
 			height: 200px; /* Adjust height as needed */
@@ -70,29 +62,37 @@
 				height: 120px; /* Further reduce height for small screens */
 			}
 		}
+		
+		.result img {
+			width:200px;
+			height:200px;
+			}
 	</style>
 {% endblock %}
 
 {% block content %}
-    <h1>Lowercase Text</h1>
-    <p style="margin: 10px 5px;">Convert your text to lowercase.</p>
-    
-    <textarea id="input-text" placeholder="Enter your text here..."></textarea>
-	<button id="copy-button"> Copy to Clipboard</button>
-    <textarea id="lowercase-text" placeholder="Lowercase version will appear here..." readonly></textarea>
+        <h1>QR Code Generator</h1>
+		<p>Easily create customizable QR Codes and save them as images.</p>
+        <form method="POST">
+            <textarea type="text" name="data" placeholder="Enter text or URL" required></textarea>
+            <button type="submit">Generate QR Code</button>
+        </form>
 
-    <script>
-        document.getElementById("input-text").addEventListener("input", function() {
-            var lowercaseText = this.value.toLowerCase();
-            document.getElementById("lowercase-text").value = lowercaseText;
-        });
-        document.getElementById("copy-button").addEventListener("click", function() {
-            var copyText = document.getElementById("lowercase-text");
-            
-            copyText.select();
-            copyText.setSelectionRange(0, 99999);
-            document.execCommand("copy");
-            alert("Copied to clipboard: " + copyText.value);
-        });
-    </script>
+        {% if error %}
+        <div class="result" style="background-color: #f8d7da; color: #721c24;">
+            <p>{{ error }}</p>
+        </div>
+        {% endif %}
+
+        {% if qr_code_img %}
+        <div class="result">
+            <h3>Generated QR Code:</h3>
+            <img src="data:image/png;base64,{{ qr_code_img }}" alt="QR Code"><br>
+			{% if qr_code_filename %}
+				<a href="{{ url_for('download_file', filename=qr_code_filename) }}" download>
+					<button>Download QR Code</button>
+				</a>
+            {% endif %}
+        </div>
+        {% endif %}
 {% endblock %}

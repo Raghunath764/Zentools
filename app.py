@@ -29,6 +29,10 @@ import string
 import random
 import secrets
 import cssmin
+import PyPDF2
+import qrcode
+from io import BytesIO
+import base64
 
 app = Flask(__name__)
 
@@ -1110,7 +1114,173 @@ def css_minify():
             error_message = "There is an issue with your CSS input. Please check and try again."
 
     return render_template('css_minify.html', css_data=css_data, minified_css=minified_css, error_message=error_message, show_features=True)
+    
+    
+@app.route('/split_pdf', methods=['GET', 'POST'])
+def split_pdf():
+    processed_pdf_filename = None
+    error = None
+    user_id = session.get('user_id', 'default')
+    user_upload_dir = os.path.join(BASE_UPLOAD_DIR, user_id)
+    user_download_dir = os.path.join(BASE_DOWNLOAD_DIR, user_id)
 
+    if request.method == 'POST':
+        pdf_file = request.files.get('pdf_file')
+        range_type = request.form.get('range_type')
+        from_page = request.form.get('from_page')
+        to_page = request.form.get('to_page')
+        single_page = request.form.get('single_page')
+
+        if not pdf_file:
+            error = "Please upload a PDF file."
+        elif not pdf_file.filename.lower().endswith('.pdf'):
+            error = "Uploaded file is not a valid PDF."
+        elif range_type == 'custom_range' and (not from_page or not to_page):
+            error = "Please specify both 'from' and 'to' pages for the custom range."
+        elif range_type == 'fixed_range' and not single_page:
+            error = "Please specify a page for the fixed range."
+        else:
+            pdf_path = os.path.join(user_upload_dir, pdf_file.filename)
+            pdf_file.save(pdf_path)
+
+            processed_pdf_filename = f"split_{pdf_file.filename}"
+            processed_pdf_path = os.path.join(user_download_dir, processed_pdf_filename)
+
+            try:
+                reader = PdfReader(pdf_path)
+                writer = PdfWriter()
+
+                if range_type == 'custom_range':
+                    start = int(from_page) - 1
+                    end = int(to_page)
+                    for page_number in range(start, end):
+                        writer.add_page(reader.pages[page_number])
+                elif range_type == 'fixed_range':
+                    page_number = int(single_page) - 1
+                    writer.add_page(reader.pages[page_number])
+
+                with open(processed_pdf_path, 'wb') as output_file:
+                    writer.write(output_file)
+            except Exception as e:
+                error = "There was an issue splitting the PDF. Please ensure the page range is valid and try again."
+
+    return render_template('split_pdf.html', processed_pdf_filename=processed_pdf_filename, error=error, show_features=True)
+    
+@app.route("/edit_pdf_metadata", methods=["GET", "POST"])
+def edit_pdf_metadata():
+    metadata = {}
+    processed_pdf_filename = None
+    error = None
+    pdf_filename = None
+    user_id = session.get('user_id', 'default')
+    user_upload_dir = os.path.join(BASE_UPLOAD_DIR, user_id)
+    user_download_dir = os.path.join(BASE_DOWNLOAD_DIR, user_id)
+
+
+    if request.method == "POST":
+        if 'pdf_file' in request.files:
+            pdf_file = request.files['pdf_file']
+            if pdf_file.filename.lower().endswith('.pdf'):
+                pdf_filename = pdf_file.filename
+                pdf_file_path = os.path.join(user_upload_dir, pdf_filename)
+                pdf_file.save(pdf_file_path)
+
+                try:
+                    with open(pdf_file_path, "rb") as file:
+                        reader = PyPDF2.PdfReader(file)
+                        metadata = reader.metadata
+                except Exception as e:
+                    error = f"Error reading PDF metadata: {e}"
+            else:
+                error = "Please upload a valid PDF file."
+
+        elif 'edit_metadata' in request.form:
+            pdf_filename = request.form['pdf_filename']
+            updated_metadata = {key: request.form.get(key) for key in request.form.keys() if key != 'pdf_filename' and key != 'edit_metadata'}
+
+            try:
+                pdf_file_path = os.path.join(user_upload_dir, pdf_filename)
+                with open(pdf_file_path, "rb") as file:
+                    reader = PyPDF2.PdfReader(file)
+                    writer = PyPDF2.PdfWriter()
+
+                    new_metadata = reader.metadata.copy()
+
+                    for key, value in updated_metadata.items():
+                        new_metadata[key] = value
+
+                    writer.add_metadata(new_metadata)
+                    for page in reader.pages:
+                        writer.add_page(page)
+
+                    processed_pdf_filename = f"updated_{pdf_filename}"
+                    processed_pdf_path = os.path.join(user_download_dir, processed_pdf_filename)
+
+                    with open(processed_pdf_path, "wb") as output_pdf:
+                        writer.write(output_pdf)
+
+            except Exception as e:
+                error = f"Error updating PDF metadata: {e}"
+
+
+    return render_template("edit_pdf_metadata.html",metadata=metadata,pdf_filename=pdf_filename,error=error,processed_pdf_filename=processed_pdf_filename, show_features=True)
+    
+    
+@app.route('/read_pdf_metadata', methods=['GET', 'POST'])
+def read_pdf_metadata():
+    if request.method == 'POST':
+        pdf_file = request.files.get('pdf_file')
+        user_id = session.get('user_id', 'default')
+        user_upload_dir = os.path.join(BASE_UPLOAD_DIR, user_id)
+        
+        if pdf_file:
+            pdf_filename = pdf_file.filename
+            pdf_file_path = os.path.join(user_upload_dir, pdf_filename)
+            pdf_file.save(pdf_file_path)
+            
+            pdf_reader = PyPDF2.PdfReader(pdf_file_path)
+            metadata = pdf_reader.metadata
+            
+            return render_template('read_pdf_metadata.html', metadata=metadata, pdf_filename=pdf_filename, show_features=True)
+    
+    return render_template('read_pdf_metadata.html', show_features=True)
+    
+@app.route('/generate_qr', methods=['GET', 'POST'])
+def generate_qr():
+    qr_code_img = None
+    error = None
+    qr_code_filename = None
+    user_id = session.get('user_id', 'default')
+    user_download_dir = os.path.join(BASE_DOWNLOAD_DIR, user_id)
+
+    if request.method == 'POST':
+        data = request.form['data']
+        
+        if data:
+            try:
+                qr = qrcode.QRCode(version=1,error_correction=qrcode.constants.ERROR_CORRECT_L,box_size=10,border=4,)
+                qr.add_data(data)
+                qr.make(fit=True)
+
+                img = qr.make_image(fill='black', back_color='white')
+
+                img_byte_array = BytesIO()
+                img.save(img_byte_array)
+                img_byte_array.seek(0)
+
+                qr_code_img = base64.b64encode(img_byte_array.getvalue()).decode('utf-8')
+                
+                qr_code_filename = "generated_qr_code.png"
+                qr_code_path = os.path.join(user_download_dir, qr_code_filename)
+                
+                qr_code_filename = "generated_qr_code.png"
+                with open(qr_code_path, 'wb') as f:
+                    f.write(img_byte_array.getvalue())
+
+            except Exception as e:
+                error = f"There is a while generating QR Code"
+
+    return render_template('generate_qr.html', qr_code_img=qr_code_img, error=error, show_features=True,qr_code_filename=qr_code_filename)
 
 if __name__ == '__main__':
     app.run(debug=True)

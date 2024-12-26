@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}Rotate PDF{% endblock %}
+{% block title %}Edit PDF Metadata{% endblock %}
 
 {% block styles %}
     <style>
@@ -54,33 +54,41 @@
         .error {
             color: red;
         }
+		
+		.range-section { display: none; margin-top: 10px; }
     </style>
 {% endblock %}
 
 {% block content %}
-    <h1>Rotate PDF Online</h1>
-	<p>How do you change orientation on a PDF? You can use this free PDF rotator to rotate all PDF pages and save the rotated PDF pages permanently. With this PDF tool you can rotate the PDF pages and change the orientation (degree) of the PDF. Just select the PDF file and click the upload button.</p>
-    <form action="/rotate_pdf" method="post" enctype="multipart/form-data" style="margin: 10px 5px;">
+    <h1>Edit PDF Metadata</h1>
+	<p>How do I edit PDF metadata? Use this PDF tool to edit PDF metadata, edit PDF author, title, subject, keywords, creator, producer, creation date, and other PDF properties.
+    <form action="edit_pdf_metadata" method="POST" enctype="multipart/form-data">
         <label for="pdf_file">Select PDF file (max 50MB):</label>
-        <input type="file" id="pdf_file" name="pdf_file" accept=".pdf" required><br><br>
-        <label for="rotation">Select angle to Rotate:</label>
-        <select id="rotation" name="rotation" required>
-            <option value="90_right">90 Degrees Clockwise (to Right)</option>
-            <option value="90_left">90 Degrees Counter Clockwise (to Left)</option>
-            <option value="180">180 Degrees (Flip Upside Down)</option>
-        </select><br>
-        <button type="submit">Rotate PDF</button><br>
+        <input type="file" name="pdf_file" accept=".pdf" required><br>
+        <button type="submit">Upload PDF</button>
     </form>
 
-    {% if processed_pdf_filename %}
-    <div class="result" style="margin: 10px 5px;">
-        <p>PDF rotated successfully! <a href="{{ url_for('download_file', filename=processed_pdf_filename) }}" download>Download Rotated PDF</a></p>
-    </div>
-    {% endif %}
+    {% if pdf_filename %}
+        <h2>Current Metadata for {{ pdf_filename }}:</h2>
+        <form action="edit_pdf_metadata" method="POST">
+            <input type="hidden" name="pdf_filename" value="{{ pdf_filename }}">
 
-    {% if error %}
-    <div class="error" style="margin: 10px 5px;">
-        <p>{{ error }}</p>
-    </div>
-	{% endif %}
+            {% for key, value in metadata.items() %}
+                <label for="{{ key }}">{{ key }}:</label>
+                <input type="text" name="{{ key }}" value="{{ value if value else '' }}"><br><br>
+            {% endfor %}
+
+            <button type="submit" name="edit_metadata">Update PDF Metadata</button>
+        </form>
+
+        {% if processed_pdf_filename %}
+            <h2>Metadata updated! 
+                <a href="{{ url_for('download_file', filename=processed_pdf_filename) }}" target="_blank">Download the updated PDF</a>
+            </h2>
+        {% endif %}
+    {% endif %}
+	
+	{% if error %}
+        <p style="color: red;">{{ error }}</p>
+    {% endif %}
 {% endblock %}
