@@ -26,7 +26,6 @@ docx2pdf==0.1.8
 etelemetry==0.3.1
 filelock==3.16.1
 fire==0.7.0
-fitz==0.0.1.dev2
 flask==3.0.3
 fonttools==4.54.1
 google-api-core==2.23.0
@@ -70,7 +69,7 @@ pyasn1==0.6.1
 pyasn1-modules==0.4.1
 pycparser==2.22
 pydot==3.0.3
-PyMuPDF==1.24.13
+pymupdf==1.25.1
 pyparsing==3.2.0
 pypdf==5.1.0
 pypdf2==3.0.1
