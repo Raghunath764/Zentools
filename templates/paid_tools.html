@@ -4,15 +4,27 @@
 
 {% block styles %}
    <style>
-		h1 {
+		.container h1 {
 			text-align: center;
 			color: #2c3e50;
-			margin-bottom: 30px;
 			font-size: 2.5em;
 			animation: fadeIn 1s ease-in-out;
 			margin-top: 75px;
 		}
 		
+		.container h4 {
+			text-align: center;
+			color: #34495e;
+			font-size: 1.2em;
+		}
+
+		.container p {
+			text-align: center;
+			color: #16a085;
+			font-size: 1.1em;
+			margin-top: 20px;
+		}
+
 		/* Animation for the heading */
         @keyframes fadeIn {
             from {
@@ -24,28 +36,46 @@
                 transform: translateY(0); /* Back to original position */
             }
         }
+
+		/* Styling for the link */
+		.container a {
+			display: inline-block;
+			margin-top: 20px;
+			font-size: 1.2em;
+			color: #2980b9;
+			text-decoration: none;
+			border: 2px solid #2980b9;
+			padding: 10px 20px;
+			border-radius: 5px;
+			transition: background-color 0.3s, color 0.3s;
+		}
+
+		.container a:hover {
+			background-color: #2980b9;
+			color: white;
+		}
+
+		/* Container for the content */
+		.container {
+			width: 80%;
+			margin: 0 auto;
+			text-align: center;
+		}
+
+		/* Add spacing between elements */
+		.container .content {
+			margin-top: 50px;
+		}
 	</style>
 {% endblock %}
 
 {% block content %}
-	<header>
-		<nav>
-			<a href="{{ url_for('home') }}" class="brand-name"><b>ZenTools</b></a>
-			<div class="menu-toggle" id="menu-toggle">
-				<span class="bar"></span>
-				<span class="bar"></span>
-				<span class="bar"></span>
-			</div>
-			<div class="menu" id="menu">
-				<a href="{{ url_for('home') }}"><b>Home</b></a>
-				<a href="{{ url_for('about_us') }}">About Us</a>
-				<a href="{{ url_for('contact_us') }}">Contact Us</a>
-				<a href="{{ url_for('paid_tools') }}">Paid Tools</a>
-				<a href="{{ url_for('logout') }}">Logout</a>
-			</div>
-		</nav>
-	</header>
-
-	<h1>Welcome to Paid ZenTools Page</h1>
-    <h2><marquee>This is the protected page where paid tools will be accessible in the future.</marquee></h2>
+	<div class="container">
+		<h1>Welcome to Paid Tools</h1>
+		<h5>This is the protected page where paid tools will be accessible.</h5>
+		<div class="content">
+			<p>Paid Tools:</p>
+			<a href="{{ url_for('pdf_to_image') }}">PDFs to Images</a><br>
+		</div>
+	</div>
 {% endblock %}

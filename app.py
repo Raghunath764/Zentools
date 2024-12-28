@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for,flash,send_from_directory,session,send_file,jsonify
+from flask import Flask, render_template, request, redirect, url_for,flash,send_from_directory,session,send_file,jsonify,Response,make_response
 import requests 
 from docx import Document
 import os
@@ -33,6 +33,10 @@ import PyPDF2
 import qrcode
 from io import BytesIO
 import base64
+import pypdfium2 as pdfium
+from pathlib import Path
+import ntpath
+from datetime import timedelta
 
 app = Flask(__name__)
 
@@ -157,6 +161,46 @@ def contact_us():
 @app.route('/submit_contact',methods=['GET', 'POST'])
 def submit_contact():
     return render_template('contact_us.html')
+    
+app.secret_key = 'zentools_zentools@123'
+ACCESS_USERNAME = 'zentools'
+ACCESS_PASSWORD = "zentools@100599"
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=1)
+
+@app.before_request
+def make_session_permanent():
+    session.permanent = True
+    
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        password = request.form.get('password')
+        username = request.form.get('username')
+        if password == ACCESS_PASSWORD and username == ACCESS_USERNAME:
+            session['authenticated'] = True  # Store authentication status in session
+            return redirect(url_for('paid_tools'))
+        else:
+            flash("Incorrect password. Please try again.", "error")
+    return render_template('login.html')
+    
+@app.route('/logout')
+def logout():
+    session.pop('authenticated', None)
+    flash("You have been logged out.", "success")
+    return redirect(url_for('home'))
+    
+@app.route('/paid_tools')
+def paid_tools():
+    if not session.get('authenticated'):  # Check if the user is authenticated
+        flash("You must log in to access this page.", "error")
+        return redirect(url_for('login'))  # Redirect to the login page if not authenticated
+
+    # If the user is authenticated, render the page
+    response = make_response(render_template('paid_tools.html'))
+    response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'  # Prevent caching
+    response.headers['Pragma'] = 'no-cache'
+    response.headers['Expires'] = '0'
+    return response
 
 @app.route('/unit_conversion')
 def unit_conversion():
@@ -417,36 +461,6 @@ def unlock_pdf():
                 error = "There is an issue while decrypting the PDF. Please try again later."
 
     return render_template('unlock_pdf.html',processed_pdf_filename=processed_pdf_filename,error=error,show_features=True)
-    
-app.secret_key = 'zentools_zentools@123'
-ACCESS_USERNAME = 'zentools'
-ACCESS_PASSWORD = "zentools@100599"
-    
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    if request.method == 'POST':
-        password = request.form.get('password')
-        username = request.form.get('username')
-        if password == ACCESS_PASSWORD and username == ACCESS_USERNAME:
-            session['authenticated'] = True  # Store authentication status in session
-            return redirect(url_for('paid_tools'))
-        else:
-            flash("Incorrect password. Please try again.", "error")
-    return render_template('login.html')
-    
-@app.route('/logout')
-def logout():
-    session.pop('authenticated', None)
-    flash("You have been logged out.", "success")
-    return redirect(url_for('home'))
-    
-@app.route('/paid_tools')
-def paid_tools():
-    if session.get('authenticated'):  # Check if the user is authenticated
-        return render_template('paid_tools.html')
-    else:
-        flash("You must log in to access this page.", "error")
-        return redirect(url_for('login'))
 
 @app.route('/jsonformatter', methods=['GET', 'POST'])
 def jsonformatter():
@@ -1281,6 +1295,75 @@ def generate_qr():
                 error = f"There is a while generating QR Code"
 
     return render_template('generate_qr.html', qr_code_img=qr_code_img, error=error, show_features=True,qr_code_filename=qr_code_filename)
+  
+
+
+  
+conversion_progress = []
+
+def calculate_dpi(width):
+    if width > 2480:  # already higher than A4
+        return 72
+    else:
+        return math.ceil(((2480 / width) / 1.39) * 100)
+
+def convert_pdf_to_images(pdf_path, output_folder):
+    file_name = ntpath.basename(os.path.splitext(pdf_path)[0])
+    file_path = str(pdf_path)
+    with pdfium.PdfDocument(file_path, autoclose=True) as pdf:
+        page_count = len(pdf)
+        for i in range(page_count):
+            page = pdf.get_page(i)
+            w = page.get_width()
+            h = page.get_height()
+            if w / h < 1:  # portrait
+                calculated_dpi = calculate_dpi(width=w)
+            else:  # square or landscape
+                calculated_dpi = calculate_dpi(width=h)
+            pil_image = page.render_topil(
+                scale=calculated_dpi / 72,
+                rotation=0,
+                colour=(255, 255, 255, 255),
+                annotations=True,
+                greyscale=False,
+                optimise_mode=pdfium.OptimiseMode.NONE,
+            )
+            pil_image.save(os.path.join(output_folder, f"{file_name}-{i + 1}.jpg"), optimise=True, quality=85, progressive=True)
+            pil_image.close()
+    conversion_progress.append(f"Converted: {file_name}.pdf")
+
+@app.route("/pdf_to_image", methods=["GET", "POST"])
+def pdf_to_image():
+    if not session.get('authenticated'):
+        flash("You must log in to access this page.", "error")
+        return redirect(url_for('login'))
+
+    response = make_response(render_template('pdf_to_image.html'))
+    response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'  # Prevent caching
+    response.headers['Pragma'] = 'no-cache'
+    response.headers['Expires'] = '0'
+    return response
+
+@app.route("/progress", methods=["GET"])
+def progress():
+    folder_path = request.args.get("folder_path")
+    if not folder_path:
+        return Response("data: Error: No folder path provided.\n\n", content_type="text/event-stream")
+
+    return Response(start_conversion(folder_path), content_type="text/event-stream")
+
+def start_conversion(folder_path):
+    for root, _, files in os.walk(folder_path):
+        for file in files:
+            if file.endswith(".pdf") or file.endswith(".PDF"):
+                pdf_path = os.path.join(root, file)
+                output_folder = os.path.join(root, "images")
+                os.makedirs(output_folder, exist_ok=True)
+                conversion_progress.append(f"Converting: {file}")
+                convert_pdf_to_images(pdf_path, output_folder)
+                yield f"data: {conversion_progress.pop(0)}\n\n"  # Send the update to client
+                time.sleep(0.5)  # Simulate a delay for real-time effect
+    yield "data: Done\n\n"
 
 if __name__ == '__main__':
     app.run(debug=True)
