@@ -1296,74 +1296,70 @@ def generate_qr():
 
     return render_template('generate_qr.html', qr_code_img=qr_code_img, error=error, show_features=True,qr_code_filename=qr_code_filename)
   
+# conversion_progress = []
+# def calculate_dpi(width):
+    # if width > 2480:  # already higher than A4
+        # return 72
+    # else:
+        # return math.ceil(((2480 / width) / 1.39) * 100)
 
+# def convert_pdf_to_images(pdf_path, output_folder):
+    # file_name = ntpath.basename(os.path.splitext(pdf_path)[0])
+    # file_path = str(pdf_path)
+    # with pdfium.PdfDocument(file_path, autoclose=True) as pdf:
+        # page_count = len(pdf)
+        # for i in range(page_count):
+            # page = pdf.get_page(i)
+            # w = page.get_width()
+            # h = page.get_height()
+            # if w / h < 1:  # portrait
+                # calculated_dpi = calculate_dpi(width=w)
+            # else:  # square or landscape
+                # calculated_dpi = calculate_dpi(width=h)
+            # pil_image = page.render_topil(
+                # scale=calculated_dpi / 72,
+                # rotation=0,
+                # colour=(255, 255, 255, 255),
+                # annotations=True,
+                # greyscale=False,
+                # optimise_mode=pdfium.OptimiseMode.NONE,
+            # )
+            # pil_image.save(os.path.join(output_folder, f"{file_name}-{i + 1}.jpg"), optimise=True, quality=85, progressive=True)
+            # pil_image.close()
+    # conversion_progress.append(f"Converted: {file_name}.pdf")
 
-  
-conversion_progress = []
+# @app.route("/pdf_to_image", methods=["GET", "POST"])
+# def pdf_to_image():
+    # if not session.get('authenticated'):
+        # flash("You must log in to access this page.", "error")
+        # return redirect(url_for('login'))
 
-def calculate_dpi(width):
-    if width > 2480:  # already higher than A4
-        return 72
-    else:
-        return math.ceil(((2480 / width) / 1.39) * 100)
+    # response = make_response(render_template('pdf_to_image.html'))
+    # response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'  # Prevent caching
+    # response.headers['Pragma'] = 'no-cache'
+    # response.headers['Expires'] = '0'
+    # return response
 
-def convert_pdf_to_images(pdf_path, output_folder):
-    file_name = ntpath.basename(os.path.splitext(pdf_path)[0])
-    file_path = str(pdf_path)
-    with pdfium.PdfDocument(file_path, autoclose=True) as pdf:
-        page_count = len(pdf)
-        for i in range(page_count):
-            page = pdf.get_page(i)
-            w = page.get_width()
-            h = page.get_height()
-            if w / h < 1:  # portrait
-                calculated_dpi = calculate_dpi(width=w)
-            else:  # square or landscape
-                calculated_dpi = calculate_dpi(width=h)
-            pil_image = page.render_topil(
-                scale=calculated_dpi / 72,
-                rotation=0,
-                colour=(255, 255, 255, 255),
-                annotations=True,
-                greyscale=False,
-                optimise_mode=pdfium.OptimiseMode.NONE,
-            )
-            pil_image.save(os.path.join(output_folder, f"{file_name}-{i + 1}.jpg"), optimise=True, quality=85, progressive=True)
-            pil_image.close()
-    conversion_progress.append(f"Converted: {file_name}.pdf")
+# @app.route("/progress", methods=["GET"])
+# def progress():
+    # folder_path = request.args.get("folder_path")
+    # if not folder_path:
+        # return Response("data: Error: No folder path provided.\n\n", content_type="text/event-stream")
 
-@app.route("/pdf_to_image", methods=["GET", "POST"])
-def pdf_to_image():
-    if not session.get('authenticated'):
-        flash("You must log in to access this page.", "error")
-        return redirect(url_for('login'))
+    # return Response(start_conversion(folder_path), content_type="text/event-stream")
 
-    response = make_response(render_template('pdf_to_image.html'))
-    response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'  # Prevent caching
-    response.headers['Pragma'] = 'no-cache'
-    response.headers['Expires'] = '0'
-    return response
-
-@app.route("/progress", methods=["GET"])
-def progress():
-    folder_path = request.args.get("folder_path")
-    if not folder_path:
-        return Response("data: Error: No folder path provided.\n\n", content_type="text/event-stream")
-
-    return Response(start_conversion(folder_path), content_type="text/event-stream")
-
-def start_conversion(folder_path):
-    for root, _, files in os.walk(folder_path):
-        for file in files:
-            if file.endswith(".pdf") or file.endswith(".PDF"):
-                pdf_path = os.path.join(root, file)
-                output_folder = os.path.join(root, "images")
-                os.makedirs(output_folder, exist_ok=True)
-                conversion_progress.append(f"Converting: {file}")
-                convert_pdf_to_images(pdf_path, output_folder)
-                yield f"data: {conversion_progress.pop(0)}\n\n"  # Send the update to client
-                time.sleep(0.5)  # Simulate a delay for real-time effect
-    yield "data: Done\n\n"
+# def start_conversion(folder_path):
+    # for root, _, files in os.walk(folder_path):
+        # for file in files:
+            # if file.endswith(".pdf") or file.endswith(".PDF"):
+                # pdf_path = os.path.join(root, file)
+                # output_folder = os.path.join(root, "images")
+                # os.makedirs(output_folder, exist_ok=True)
+                # conversion_progress.append(f"Converting: {file}")
+                # convert_pdf_to_images(pdf_path, output_folder)
+                # yield f"data: {conversion_progress.pop(0)}\n\n"  # Send the update to client
+                # time.sleep(0.5)  # Simulate a delay for real-time effect
+    # yield "data: Done\n\n"
 
 if __name__ == '__main__':
     app.run(debug=True)
