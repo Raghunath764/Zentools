@@ -1298,6 +1298,5 @@ def generate_qr():
 
     return render_template('generate_qr.html', qr_code_img=qr_code_img, error=error, show_features=True,qr_code_filename=qr_code_filename)
 
-
 if __name__ == '__main__':
     app.run(debug=True)
