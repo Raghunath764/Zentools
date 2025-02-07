@@ -39,41 +39,39 @@ import ntpath
 from datetime import timedelta
 
 app = Flask(__name__)
-
+STATIC_FOLDER = os.path.join(app.root_path, 'static')
 app.config['MAX_CONTENT_LENGTH'] = 50 * 1024 * 1024
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=1)
+app.secret_key = 'zentools_zentools@123'
 
 ImageFile.LOAD_TRUNCATED_IMAGES = True
-
 BASE_UPLOAD_DIR = 'uploads'
 BASE_DOWNLOAD_DIR = 'downloads'
-
 os.makedirs(BASE_UPLOAD_DIR, exist_ok=True)
 os.makedirs(BASE_DOWNLOAD_DIR, exist_ok=True)
-
 INACTIVITY_TIMEOUT = 3600
 p = inflect.engine()
 
-STATIC_FOLDER = os.path.join(app.root_path, 'static')
+YOUTUBE_API_KEY = "AIzaSyDLdwAZ9M-42__M5kcxTZzr0UBFwnavGhY"
+YOUTUBE_API_SERVICE_NAME = "youtube"
+YOUTUBE_API_VERSION = "v3"
+ACCESS_USERNAME = 'zentools'
+ACCESS_PASSWORD = "zentools@100599"
+exchangerate_API_KEY = "393fc6c7489952ffe5f7d33b"
 
-# Conversion logic for different units
 def convert_value(value, from_unit, to_unit, category):
-    # Length conversion logic
     if category == 'length':
         if from_unit == 'm' and to_unit == 'km':
             return value / 1000
         elif from_unit == 'km' and to_unit == 'm':
             return value * 1000
-        # Add other length unit conversion logic here...
 
-    # Weight conversion logic
     elif category == 'weight':
         if from_unit == 'kg' and to_unit == 'g':
             return value * 1000
         elif from_unit == 'g' and to_unit == 'kg':
             return value / 1000
-        # Add other weight unit conversion logic here...
 
-    # Temperature conversion logic
     elif category == 'temperature':
         if from_unit == 'C' and to_unit == 'F':
             return (value * 9/5) + 32
@@ -83,14 +81,11 @@ def convert_value(value, from_unit, to_unit, category):
             return value + 273.15
         elif from_unit == 'K' and to_unit == 'C':
             return value - 273.15
-        # Add other temperature unit conversion logic here...
 
     return value
-
-# Function to fetch exchange rates from the API
+    
 def get_exchange_rate(from_currency, to_currency):
-    # Replace YOUR_API_KEY with the actual API key
-    url = f"https://v6.exchangerate-api.com/v6/393fc6c7489952ffe5f7d33b/latest/{from_currency}"
+    url = f"https://v6.exchangerate-api.com/v6/{exchangerate_API_KEY}/latest/{from_currency}"
     response = requests.get(url)
     data = response.json()
     
@@ -116,17 +111,14 @@ def clean_inactive_user_directories():
                 if current_time - last_modified > INACTIVITY_TIMEOUT:
                     shutil.rmtree(user_dir_path, ignore_errors=True)
 
-# Homepage route
 @app.route('/')
 def home():
     
-    user_id = session.get('user_id')  # Get the user ID from the session
+    user_id = session.get('user_id')
     if user_id:
-        # Paths to user-specific directories
         user_upload_dir = os.path.join(BASE_UPLOAD_DIR, user_id)
         user_download_dir = os.path.join(BASE_DOWNLOAD_DIR, user_id)
         
-        # Delete user-specific directories
         delete_files_in_directory(user_upload_dir)
         delete_files_in_directory(user_download_dir)
     
@@ -135,9 +127,8 @@ def home():
 @app.before_request
 def setup_user_session():
     if 'user_id' not in session:
-        session['user_id'] = str(uuid.uuid4())  # Generate a unique session ID
+        session['user_id'] = str(uuid.uuid4())
     
-    # Create user-specific directories if they don't exist
     user_id = session['user_id']
     os.makedirs(os.path.join(BASE_UPLOAD_DIR, user_id), exist_ok=True)
     os.makedirs(os.path.join(BASE_DOWNLOAD_DIR, user_id), exist_ok=True)
@@ -163,11 +154,6 @@ def contact_us():
 @app.route('/submit_contact',methods=['GET', 'POST'])
 def submit_contact():
     return render_template('contact_us.html')
-    
-app.secret_key = 'zentools_zentools@123'
-ACCESS_USERNAME = 'zentools'
-ACCESS_PASSWORD = "zentools@100599"
-app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=1)
 
 @app.before_request
 def make_session_permanent():
@@ -179,7 +165,7 @@ def login():
         password = request.form.get('password')
         username = request.form.get('username')
         if password == ACCESS_PASSWORD and username == ACCESS_USERNAME:
-            session['authenticated'] = True  # Store authentication status in session
+            session['authenticated'] = True
             return redirect(url_for('paid_tools'))
         else:
             flash("Incorrect password. Please try again.", "error")
@@ -193,13 +179,12 @@ def logout():
     
 @app.route('/paid_tools')
 def paid_tools():
-    if not session.get('authenticated'):  # Check if the user is authenticated
+    if not session.get('authenticated'): 
         flash("You must log in to access this page.", "error")
-        return redirect(url_for('login'))  # Redirect to the login page if not authenticated
+        return redirect(url_for('login'))
 
-    # If the user is authenticated, render the page
     response = make_response(render_template('paid_tools.html'))
-    response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'  # Prevent caching
+    response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
     response.headers['Pragma'] = 'no-cache'
     response.headers['Expires'] = '0'
     return response
@@ -215,10 +200,8 @@ def convert_unit():
     to_unit = request.form['to_unit']
     value = float(request.form['value'])
 
-    # Perform the conversion
     result = convert_value(value, from_unit, to_unit, category)
 
-    # Return the result back to the template
     return render_template('unit_conversion.html', result=result, value=value, from_unit=from_unit, to_unit=to_unit)
 
 @app.route('/currency_conversion')
@@ -231,7 +214,6 @@ def convert_currency():
     from_currency = request.form['from_currency']
     to_currency = request.form['to_currency']
     
-    # Get the exchange rate for the conversion
     exchange_rate = get_exchange_rate(from_currency, to_currency)
     
     if exchange_rate:
@@ -242,7 +224,7 @@ def convert_currency():
         
 @app.route('/pdf_to_word', methods=['GET', 'POST'])
 def pdf_to_word():
-    docx_filename = None  # Initialize variable to store the output file name
+    docx_filename = None
     user_id = session['user_id']
     if request.method == 'POST':
         if 'pdf_file' not in request.files:
@@ -250,7 +232,6 @@ def pdf_to_word():
 
         pdf_file = request.files['pdf_file']
         if pdf_file and pdf_file.filename.lower().endswith('.pdf'):
-            # Ensure 'uploads' directory exists
             upload_folder = os.path.join(BASE_UPLOAD_DIR, user_id)
             if not os.path.exists(upload_folder):
                 os.makedirs(upload_folder)
@@ -259,7 +240,6 @@ def pdf_to_word():
             print("Path",pdf_path)
             pdf_file.save(pdf_path)
 
-            # Convert PDF to DOCX
             docx_filename = pdf_file.filename.rsplit('.', 1)[0] + '.docx'
             downloads_folder = os.path.join(BASE_DOWNLOAD_DIR, user_id)
             if not os.path.exists(downloads_folder):
@@ -267,41 +247,33 @@ def pdf_to_word():
 
             docx_path = os.path.join(downloads_folder, docx_filename)
             try:
-                converter = Converter(pdf_path)  # Create a Converter instance
-                converter.convert(docx_path, start=0, end=None)  # Convert entire PDF
+                converter = Converter(pdf_path)
+                converter.convert(docx_path, start=0, end=None)
                 converter.close()
             except Exception as e:
                 return f"Error during conversion: {str(e)}", 500
 
-    # Render the same HTML file and pass the generated DOCX filename (if available)
     return render_template('pdf_to_word.html', docx_filename=docx_filename,show_features=True)
        
 @app.route('/word_to_pdf', methods=['GET', 'POST'])
 def word_to_pdf():
-    docx_filename = None  # Initialize docx_filename to handle the GET request case.
+    docx_filename = None 
     user_id = session['user_id']
     if request.method == 'POST':
-        # Handle DOCX file upload
         docx_file = request.files['docx_file']
         
-        # Check if the file is a DOCX file
         if docx_file and docx_file.filename.endswith('.docx'):
             docx_filename = docx_file.filename
             docx_path = os.path.join(os.path.join(BASE_UPLOAD_DIR, user_id), docx_filename)
-            
-            # Save the DOCX file
+
             docx_file.save(docx_path)
             
-            # Convert DOCX to PDF
             try:
-                # Define the output PDF file path
                 pdf_filename = docx_filename.replace('.docx', '.pdf')
                 pdf_path = os.path.join(os.path.join(BASE_DOWNLOAD_DIR, user_id), pdf_filename)
                 
-                # Perform the conversion
-                convert(docx_path, pdf_path)  # This converts DOCX to PDF
+                convert(docx_path, pdf_path)
                 
-                # Provide a download link to the generated PDF
                 return render_template('word_to_pdf.html', pdf_filename=pdf_filename)
             
             except Exception as e:
@@ -319,31 +291,26 @@ def download_file(filename):
 @app.route('/download_tools/<filename>')
 def download_tools(filename):
     return send_from_directory(STATIC_FOLDER, filename, as_attachment=True)
-      
-
-API_KEY = "AIzaSyDLdwAZ9M-42__M5kcxTZzr0UBFwnavGhY"
-YOUTUBE_API_SERVICE_NAME = "youtube"
-YOUTUBE_API_VERSION = "v3"
 
 @app.route('/youtube_tags', methods=['GET', 'POST'])
 def youtube_tags():
-    tags = None  # To store the tags fetched from the video
-    error = None  # To store any errors
-    video_title = None  # To store the video title
-    video_thumbnail = None  # To store the video thumbnail URL
+    tags = None 
+    error = None 
+    video_title = None 
+    video_thumbnail = None
 
     if request.method == 'POST':
-        video_url = request.form.get('video_url') # Get URL from the form
+        video_url = request.form.get('video_url') 
         
         if video_url:
             try:
-                # Extract the video ID from the URL
+                
                 video_id = extract_video_id(video_url)
                 if not video_id:
                     error = "Error: please enter a valid YouTube video URL"
                 else:
-                    # Call YouTube Data API to fetch tags
-                    youtube = build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION, developerKey=API_KEY)
+                    
+                    youtube = build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION, developerKey=YOUTUBE_API_KEY)
                     response = youtube.videos().list(part="snippet", id=video_id).execute()
                     tags = response['items'][0]['snippet'].get('tags', [])
                     video_title = response['items'][0]['snippet']['title']
@@ -352,7 +319,6 @@ def youtube_tags():
                     if not tags:
                         error = "No tags found for this video."
             except Exception as e:
-                # Handle any API or parsing errors
                 error = "Unable to fetch tags for this video. Please check the URL or try again later."
 
     return render_template('youtube_tags.html', tags=tags, error=error,title=video_title, thumbnail=video_thumbnail,show_features=True)
@@ -365,14 +331,12 @@ def extract_video_id(url):
     else:
         return None
         
-# Route for the PDF encryption form
 @app.route('/protect_pdf', methods=['GET', 'POST'])
 def protect_pdf():
     encrypted_pdf_path = None
     error = None
     user_id = session['user_id']
     if request.method == 'POST':
-        # Get the uploaded PDF file and the password
         pdf_file = request.files.get('pdf_file')
         password = request.form.get('password')
 
@@ -385,7 +349,6 @@ def protect_pdf():
         else:
             pdf_file = request.files['pdf_file']
             if pdf_file and pdf_file.filename.lower().endswith('.pdf'):
-                # Ensure 'uploads' directory exists
                 upload_folder = os.path.join(BASE_UPLOAD_DIR, user_id)
                 if not os.path.exists(upload_folder):
                     os.makedirs(upload_folder)
@@ -402,23 +365,18 @@ def protect_pdf():
     return render_template('protect_pdf.html', encrypted_pdf_path=encrypted_pdf_path, error=error,show_features=True)
 
 
-# Function to encrypt the PDF with a password
 def encrypt_pdf(pdf_path, password, filename):
     user_id = session['user_id']
-    # Create PDF reader and writer
     reader = PdfReader(pdf_path)
     writer = PdfWriter()
 
-    # Add all pages to the writer
     for page_num in range(len(reader.pages)):
         page = reader.pages[page_num]
         writer.add_page(page)
 
-    # Set a password for the encrypted PDF
     encrypted_pdf_filename = f"encrypted_{filename}"
     encrypted_pdf_path = os.path.join(os.path.join(BASE_DOWNLOAD_DIR, user_id), encrypted_pdf_filename)
     
-    # Write the encrypted PDF to the output path
     with open(encrypted_pdf_path, 'wb') as encrypted_file:
         writer.encrypt(password)
         writer.write(encrypted_file)
@@ -432,11 +390,9 @@ def unlock_pdf():
     user_id = session['user_id']
 
     if request.method == 'POST':
-        # Get the uploaded PDF file and the password
         pdf_file = request.files.get('pdf_file')
         password = request.form.get('password')
 
-        # Validate file and password input
         if not pdf_file:
             error = "Please upload a PDF file."
         elif not password:
@@ -444,18 +400,14 @@ def unlock_pdf():
         elif not pdf_file.filename.lower().endswith('.pdf'):
             error = "Uploaded file is not a valid PDF."
         else:
-            # Save the uploaded PDF to the uploads folder
             pdf_path = os.path.join(os.path.join(BASE_UPLOAD_DIR, user_id), pdf_file.filename)
             pdf_file.save(pdf_path)
 
-            # Define output path for decrypted PDF
             processed_pdf_filename = f"unlocked_{pdf_file.filename}"
             processed_pdf_path = os.path.join(os.path.join(BASE_DOWNLOAD_DIR, user_id), processed_pdf_filename)
 
             try:
-                # Attempt to open and decrypt the PDF with the provided password
                 with pikepdf.open(pdf_path, password=password) as pdf:
-                    # Save the decrypted PDF to the output path
                     pdf.save(processed_pdf_path)
             except pikepdf.PasswordError:
                 error = "Incorrect password. Please try again with the correct password."
@@ -475,33 +427,26 @@ def jsonformatter():
 
         if json_input:
             try:
-                # Attempt to parse JSON directly
                 parsed_json = json.loads(json_input)
             except json.JSONDecodeError:
-                # Try to fix common issues
                 try:
-                    corrected_json_input = json_input.strip()  # Remove leading/trailing whitespace
+                    corrected_json_input = json_input.strip()
 
-                    # Fix unquoted keys
                     corrected_json_input = re.sub(
                         r"(?<![\[{,])\s*([a-zA-Z_][\w]*)\s*:(?![^\[{])", r'"\1":', corrected_json_input
                     )
                     
-                    # Convert single quotes to double quotes
                     corrected_json_input = corrected_json_input.replace("'", '"')
                     corrected_json_input = corrected_json_input.replace("False", 'false').replace("True", 'true').replace("None", '"None"')
                     
-                    # Remove trailing commas in arrays/objects
                     corrected_json_input = re.sub(r",(\s*[\]}\]])", r"\1", corrected_json_input)
 
-                    # Attempt to parse corrected JSON
                     parsed_json = json.loads(corrected_json_input)
                 except json.JSONDecodeError as e:
                     error_message = "Invalid JSON please enter valid JSON"
                     parsed_json = None
 
             if parsed_json:
-                # Pretty print the JSON with 3-space indentation
                 formatted_json = json.dumps(parsed_json, indent=3)
         else:
             error_message = "Please enter JSON data."
@@ -517,14 +462,12 @@ def merge_pdf():
         if len(files) < 2:
             return "Please upload at least two PDF files."
 
-        # Save the uploaded files
         filenames = []
         for file in files:
             filename = os.path.join(os.path.join(BASE_UPLOAD_DIR, user_id), file.filename)
             file.save(filename)
             filenames.append(filename)
 
-        # Merge the PDFs
         
         merged_pdf_filename = 'Zentools_merged.pdf'
         merged_pdf = os.path.join(os.path.join(BASE_DOWNLOAD_DIR, user_id),merged_pdf_filename )
@@ -534,7 +477,6 @@ def merge_pdf():
         merger.write(merged_pdf)
         merger.close()
 
-        # Provide the merged PDF URL for downloading
         return render_template('merge_pdf.html', merged_pdf_filename=merged_pdf_filename,show_features=True)
 
     return render_template('merge_pdf.html',show_features=True)
@@ -547,13 +489,11 @@ def image_to_base64():
         image_file = request.files['image_file']
 
         if image_file and image_to_base64_allowed_file(image_file.filename):
-            # Read the image and convert to Base64
             img = image_file.read()
-            base64_string = base64.b64encode(img).decode('utf-8')  # Convert to Base64 string
+            base64_string = base64.b64encode(img).decode('utf-8')
             
     return render_template('image_to_base64.html', base64_string=base64_string,show_features=True)
 
-# Helper function to check allowed file extensions
 def image_to_base64_allowed_file(filename):
     ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -568,14 +508,11 @@ def base64_to_image():
     if request.method == 'POST' and 'base64_string' in request.form:
         base64_string = request.form['base64_string'].strip()
         try:
-            # Remove Base64 header if present
             if base64_string.startswith("data:image"):
                 base64_string = base64_string.split(",", 1)[1]
 
-            # Decode the Base64 string
             img_data = base64.b64decode(base64_string)
 
-            # Save the image in the downloads folder
             filename = "decoded_image.jpg"
             image_path = os.path.join(os.path.join(BASE_DOWNLOAD_DIR, user_id), filename)
             with open(image_path, 'wb') as f:
@@ -598,27 +535,22 @@ def compress_image():
         
         if image_file:
             try:
-                # Get the original file extension
                 file_extension = image_file.filename.rsplit('.', 1)[1].lower()
 
-                # Map JPG/JPEG to JPEG format (PIL expects 'JPEG' for both)
                 if file_extension == 'jpg' or file_extension == 'jpeg':
                     pil_format = 'JPEG'
                 else:
-                    pil_format = file_extension.upper()  # Use the extension directly for other formats
+                    pil_format = file_extension.upper()
 
-                # Open the image using PIL
                 img = Image.open(image_file)
                 
                 width, height = img.size
                 new_size = (width//2, height//2)
                 img = img.resize(new_size)
                 
-                # Set the output file path with the same extension
                 compressed_image_filename = f'compressed_image.{file_extension}'
                 compressed_image_path = os.path.join(os.path.join(BASE_DOWNLOAD_DIR, user_id), f'compressed_image.{file_extension}')
                 
-                # Compress the image (adjust quality)
                 img.save(compressed_image_path, format=pil_format, quality=50,optimize=True)
                 
             except Exception as e:
@@ -638,20 +570,15 @@ def invert_image():
         
         if image_file:
             try:
-                # Get the original file extension
                 file_extension = image_file.filename.rsplit('.', 1)[1].lower()
 
-                # Open the image using PIL
-                img = Image.open(image_file).convert('RGB')  # Ensure image is in RGB mode
+                img = Image.open(image_file).convert('RGB')
                 
-                # Invert the image colors
                 inverted_img = ImageOps.invert(img)
                 
-                # Set the output file path
                 inverted_image_filename = f'inverted_image.{file_extension}'
                 inverted_image_path = os.path.join(os.path.join(BASE_DOWNLOAD_DIR, user_id), inverted_image_filename)
                 
-                # Save the inverted image
                 inverted_img.save(inverted_image_path)
                 
             except Exception as e:
@@ -671,20 +598,15 @@ def convert_to_black_and_white():
         
         if image_file:
             try:
-                # Get the original file extension
                 file_extension = image_file.filename.rsplit('.', 1)[1].lower()
 
-                # Open the image using PIL
                 img = Image.open(image_file)
                 
-                # Convert the image to black and white (grayscale)
                 bw_img = img.convert('L')
                 
-                # Set the output file path
                 bw_image_filename = f'bw_image.{file_extension}'
                 bw_image_path = os.path.join(os.path.join(BASE_DOWNLOAD_DIR, user_id), bw_image_filename)
                 
-                # Save the black and white image
                 bw_img.save(bw_image_path)
                 
             except Exception as e:
@@ -709,12 +631,11 @@ def youtube_thumbnail_grabber():
                 if not video_id:
                     error = "Error: please enter a valid YouTube video URL"
                 else:
-                    youtube = build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION, developerKey=API_KEY)
+                    youtube = build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION, developerKey=YOUTUBE_API_KEY)
                     response = youtube.videos().list(part="snippet", id=video_id).execute()
                     video_title = response['items'][0]['snippet']['title']
                     thumbnails = response['items'][0]['snippet']['thumbnails']
 
-                    # Extract all available thumbnails and order them
                     all_thumbnails = {
                         'HD': thumbnails.get('maxres', {}),
                         'Standard': thumbnails.get('standard', {}),
@@ -722,7 +643,6 @@ def youtube_thumbnail_grabber():
                         'Medium': thumbnails.get('medium', {}),
                     }
 
-                    # Save the images and store URLs
                     for size, thumbnail in all_thumbnails.items():
                         if thumbnail:
                             thumbnail_urls[size] = thumbnail['url']
@@ -754,22 +674,17 @@ def convert_jpg_to_png():
         
         if image_file:
             try:
-                # Get the original file extension
                 file_extension = image_file.filename.rsplit('.', 1)[1].lower()
 
-                # Check if the uploaded file is a JPG
                 if file_extension != 'jpg' and file_extension != 'jpeg':
                     error_message = "Only JPG or JPEG files are allowed for conversion."
                     return render_template('convert_jpg_to_png.html', error_message=error_message)
                 
-                # Open the image using PIL
                 img = Image.open(image_file)
                 
-                # Set the output file path for PNG
                 png_image_filename = f'{os.path.splitext(image_file.filename)[0]}.png'
                 png_image_path = os.path.join(os.path.join(BASE_DOWNLOAD_DIR, user_id), png_image_filename)
                 
-                # Save the image as PNG
                 img.save(png_image_path, 'PNG')
                 
             except Exception as e:
@@ -788,26 +703,19 @@ def convert_png_to_jpg():
         
         if image_file:
             try:
-                # Get the original file extension
                 file_extension = image_file.filename.rsplit('.', 1)[1].lower()
-
-                # Check if the uploaded file is a PNG
                 if file_extension != 'png':
                     error_message = "Only PNG files are allowed for conversion."
                     return render_template('convert_png_to_jpg.html', error_message=error_message)
                 
-                # Open the image using PIL
                 img = Image.open(image_file)
                 
-                # Set the output file path for JPG
                 jpg_image_filename = f'{os.path.splitext(image_file.filename)[0]}.jpg'
                 jpg_image_path = os.path.join(os.path.join(BASE_DOWNLOAD_DIR, user_id), jpg_image_filename)
                 
-                # Convert image mode to 'RGB' (JPG does not support transparency)
                 if img.mode in ("RGBA", "P"): 
                     img = img.convert("RGB")
                 
-                # Save the image as JPG
                 img.save(jpg_image_path, 'JPEG')
                 
             except Exception as e:
@@ -827,26 +735,20 @@ def convert_webp_to_jpg():
         
         if image_file:
             try:
-                # Get the original file extension
                 file_extension = image_file.filename.rsplit('.', 1)[1].lower()
 
-                # Check if the uploaded file is a WEBP
                 if file_extension != 'webp':
                     error_message = "Only WEBP files are allowed for conversion."
                     return render_template('convert_webp_to_jpg.html', error_message=error_message)
                 
-                # Open the image using PIL
                 img = Image.open(image_file)
                 
-                # Set the output file path for JPG
                 jpg_image_filename = f'{os.path.splitext(image_file.filename)[0]}.jpg'
                 jpg_image_path = os.path.join(os.path.join(BASE_DOWNLOAD_DIR, user_id), jpg_image_filename)
                 
-                # Convert image mode to 'RGB' (JPG does not support transparency)
                 if img.mode in ("RGBA", "P"): 
                     img = img.convert("RGB")
                 
-                # Save the image as JPG
                 img.save(jpg_image_path, 'JPEG')
                 
             except Exception as e:
@@ -862,36 +764,30 @@ def convert_jpgs_to_pdf():
     pdf_filename = None
     user_id = session['user_id']
     if request.method == 'POST' and 'image_files' in request.files:
-        image_files = request.files.getlist('image_files')  # Retrieve multiple files
+        image_files = request.files.getlist('image_files') 
 
         if image_files:
             try:
                 images = []
-                base_name = os.path.splitext(image_files[0].filename)[0]  # Use the name of the first image as base
+                base_name = os.path.splitext(image_files[0].filename)[0]
 
                 for image_file in image_files:
-                    # Get the file extension
                     file_extension = image_file.filename.rsplit('.', 1)[1].lower()
 
-                    # Check if the uploaded file is a JPG or JPEG
                     if file_extension not in ['jpg', 'jpeg']:
                         error_message = "Only JPG or JPEG files are allowed for conversion."
                         return render_template('convert_jpgs_to_pdf.html', error_message=error_message)
-
-                    # Open the image using PIL
+                        
                     img = Image.open(image_file)
 
-                    # Convert image mode to RGB if required
                     if img.mode in ("RGBA", "P"):
                         img = img.convert("RGB")
 
                     images.append(img)
 
-                # Set the output file path for PDF using the base name
                 pdf_filename = f"{base_name}.pdf"
                 pdf_file_path = os.path.join(os.path.join(BASE_DOWNLOAD_DIR, user_id), pdf_filename)
 
-                # Save all images as a single PDF
                 images[0].save(pdf_file_path, "PDF", resolution=100.0, save_all=True, append_images=images[1:])
 
             except Exception as e:
@@ -1025,19 +921,16 @@ def password_generator():
 @app.route('/generate-password', methods=['POST'])
 def generate_password():
     data = request.json
-    length = int(data.get('length', 12))  # Default length is 12 if not provided
+    length = int(data.get('length', 12))
 
-    # Validate the length (ensure it's within the range of 8 to 48)
     if length < 8 or length > 48:
         return jsonify({'password': 'Password length must be between 8 and 48 characters!'}), 400
 
-    # Define the character sets for each type of character
     lowercase = string.ascii_lowercase
     uppercase = string.ascii_uppercase
     numbers = string.digits
     symbols = string.punctuation
 
-    # Initialize the pool of characters based on selected checkboxes
     password_characters = ""
     if data.get('lowercase'):
         password_characters += lowercase
@@ -1068,7 +961,7 @@ def uppercase_text():
 def rotate_pdf():
     processed_pdf_filename = None
     error = None
-    user_id = session.get('user_id', 'default')  # Replace with actual session management
+    user_id = session.get('user_id', 'default')
     user_upload_dir = os.path.join(BASE_UPLOAD_DIR, user_id)
     user_download_dir = os.path.join(BASE_DOWNLOAD_DIR, user_id)
 
@@ -1106,7 +999,6 @@ def rotate_pdf():
                         page.rotate(180)
                     writer.add_page(page)
 
-                # Save the rotated PDF
                 with open(processed_pdf_path, 'wb') as output_file:
                     writer.write(output_file)
             except Exception as e:
