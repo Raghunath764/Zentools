@@ -261,37 +261,39 @@
 	</script>
 	
 	<script>
-    const themeToggle = document.getElementById("theme-toggle");
-    const body = document.body;
+		const themeToggle = document.getElementById("theme-toggle");
+		const body = document.body;
 
-    // Check if a theme is already saved in localStorage
-    const savedTheme = localStorage.getItem("theme");
+		// Check if a theme is already saved in localStorage
+		const savedTheme = localStorage.getItem("theme");
 
-    // If the theme is saved as dark, set dark mode by default
-    if (savedTheme === "dark") {
-        body.classList.add("dark-mode");
-        themeToggle.innerHTML = '<i class="fa fa-sun"></i> Light Mode'; // Light Mode with sun icon
-    } else {
-        // Set light mode by default
-        body.classList.remove("dark-mode");
-        themeToggle.innerHTML = '<i class="fa fa-moon"></i> Dark Mode'; // Dark Mode with moon icon
-    }
+		// If no theme is saved, set dark mode by default
+		if (savedTheme === "dark" || savedTheme === null) {
+			body.classList.add("dark-mode");
+			themeToggle.innerHTML = '<i class="fa fa-sun"></i> Light Mode'; // Light Mode with sun icon
+		} else {
+			// Set light mode by default
+			body.classList.remove("dark-mode");
+			themeToggle.innerHTML = '<i class="fa fa-moon"></i> Dark Mode'; // Dark Mode with moon icon
+		}
 
-    // Toggle Dark/Light mode
-    themeToggle.addEventListener("click", function(event) {
-        event.preventDefault(); // Prevent page refresh
+		// Toggle Dark/Light mode
+		themeToggle.addEventListener("click", function(event) {
+			event.preventDefault(); // Prevent page refresh
 
-        body.classList.toggle("dark-mode");
+			body.classList.toggle("dark-mode");
 
-        if (body.classList.contains("dark-mode")) {
-            localStorage.setItem("theme", "dark");
-            themeToggle.innerHTML = '<i class="fa fa-sun"></i> Light Mode'; // Light Mode with sun icon
-        } else {
-            localStorage.setItem("theme", "light");
-            themeToggle.innerHTML = '<i class="fa fa-moon"></i> Dark Mode'; // Dark Mode with moon icon
-        }
-    });
-</script>
+			if (body.classList.contains("dark-mode")) {
+				localStorage.setItem("theme", "dark");
+				themeToggle.innerHTML = '<i class="fa fa-sun"></i> Light Mode'; // Light Mode with sun icon
+			} else {
+				localStorage.setItem("theme", "light");
+				themeToggle.innerHTML = '<i class="fa fa-moon"></i> Dark Mode'; // Dark Mode with moon icon
+			}
+		});
+	</script>
+
+
 
 </body>
 </html>
