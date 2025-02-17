@@ -16,7 +16,37 @@
     <title>ZenTools - {% block title %}Home{% endblock %}</title>
 	<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 	<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+	    <style>
+			/* Light mode styles (default) */
+			body {
+				background-color: white;
+				color: black;
+			}
+			
+			/* Dark mode styles */
+			body.dark-mode {
+				background-color: #121212;
+				color: #ffffff;
+			}
+
+			/* Dark mode button */
+			.theme-toggle {
+				cursor: pointer;
+				border: none;
+				background-color: transparent;
+				color: inherit;
+			}
+			
+			body.dark-mode h1 {
+				color: #ecf0f1; /* Light color for h1 in dark mode */
+				}
+
+			body h1 {
+				color: #2c3e50; /* Default color for h1 in light mode */
+			}
+		</style>
 	{% block styles %}{% endblock %}
 </head>
 <body>
@@ -27,6 +57,7 @@
 					<img src="{{ url_for('static', filename='images/logo.png') }}" alt="ZenTools Logo" style="height:40px; vertical-align:middle;">
 					<b>ZenTools</b>
 				</a>
+			
 				<div class="menu-toggle" id="menu-toggle">
 					<span class="bar"></span>
 					<span class="bar"></span>
@@ -101,6 +132,10 @@
 					<a href="{{ url_for('contact_us') }}">Contact Us</a>
 					<a href="{{ url_for('paid_tools') }}">Paid Tools</a>
 					<a href="{{ url_for('logout') }}">Logout</a>
+					<!-- Dark Mode Toggle with Icons -->
+					<a href="#" id="theme-toggle" class="theme-toggle">
+						<i class="fa fa-sun"></i> Light Mode
+					</a>
 				</div>
 			</nav>
 		</header>
@@ -111,6 +146,7 @@
 					<img src="{{ url_for('static', filename='images/logo.png') }}" alt="ZenTools Logo" style="height:40px; vertical-align:middle;">
 					<b>ZenTools</b>
 				</a>
+				
 				<div class="menu-toggle" id="menu-toggle">
 					<span class="bar"></span>
 					<span class="bar"></span>
@@ -184,6 +220,10 @@
 					<a href="{{ url_for('about_us') }}">About Us</a>
 					<a href="{{ url_for('contact_us') }}">Contact Us</a>
 					<a href="{{ url_for('paid_tools') }}">Paid Tools</a>
+					<!-- Dark Mode Toggle with Icons -->
+					<a href="#" id="theme-toggle" class="theme-toggle">
+						<i class="fa fa-sun"></i> Light Mode
+					</a>
 				</div>
 			</nav>
 		</header>
@@ -217,6 +257,36 @@
 
 		menuToggle.addEventListener('click', () => {
 			menu.classList.toggle('active'); // Toggle the menu visibility
+		});
+	</script>
+	
+	<script>
+		const themeToggle = document.getElementById("theme-toggle");
+		const body = document.body;
+
+		// Set Dark Mode by default
+		body.classList.add("dark-mode");
+		themeToggle.innerHTML = '<i class="fa fa-sun"></i> Light Mode'; // Light Mode with sun icon
+
+		// Check if a theme is already saved in localStorage
+		if (localStorage.getItem("theme") === "dark") {
+			body.classList.add("dark-mode");
+			themeToggle.innerHTML = '<i class="fa fa-sun"></i> Light Mode'; // Light Mode with sun icon
+		}
+
+		// Toggle Dark/Light mode
+		themeToggle.addEventListener("click", function(event) {
+			event.preventDefault(); // Prevent page refresh
+
+			body.classList.toggle("dark-mode");
+
+			if (body.classList.contains("dark-mode")) {
+				localStorage.setItem("theme", "dark");
+				themeToggle.innerHTML = '<i class="fa fa-sun"></i> Light Mode'; // Light Mode with sun icon
+			} else {
+				localStorage.setItem("theme", "light");
+				themeToggle.innerHTML = '<i class="fa fa-moon"></i> Dark Mode'; // Dark Mode with moon icon
+			}
 		});
 	</script>
 </body>
